@@ -26,7 +26,7 @@ export default function NavBar() {
 
   return (
     <NavigationMenu className="w-full max-w-full">
-      <NavigationMenuList className="w-full flex-1 justify-end">
+      <NavigationMenuList className="w-full flex-1 justify-end gap-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -34,8 +34,10 @@ export default function NavBar() {
               <NavigationMenuLink
                 className={cn(
                   navigationMenuTriggerStyle(),
-                  isActive &&
-                    "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground",
+                  "focus:bg-transparent focus:text-foreground",
+                  isActive
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground",
                 )}
                 render={<Link href={item.href}>{item.label}</Link>}
               />

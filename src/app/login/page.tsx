@@ -1,1 +1,90 @@
-//login
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export default function CardDemo() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-5xl w-full">
+        {/* Bagian Login */}
+        <Card className="w-full max-w-sm mx-auto">
+          <CardHeader>
+            <CardTitle>Welcome Back To Orthopaedic Center</CardTitle>
+
+            <CardDescription>
+              Enter your email below to login to your account
+            </CardDescription>
+
+            <CardAction>
+              <Button variant="link">Sign Up</Button>
+            </CardAction>
+          </CardHeader>
+
+          <CardContent>
+            <form>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    required
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+
+                    <a
+                      href="/"
+                      className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    >
+                      Forgot your password?
+                    </a>
+                  </div>
+
+                  <Input id="password" type="password" required />
+                </div>
+              </div>
+            </form>
+          </CardContent>
+
+          <CardFooter className="flex flex-col items-stretch gap-4">
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+
+            <p className="w-full text-center text-sm">
+              Don't have an account?{" "}
+              <a href="/register" className="text-blue-500 hover:underline">
+                Register here
+              </a>
+            </p>
+          </CardFooter>
+        </Card>
+
+        <div className="flex justify-center items-center">
+          <Image
+            src="/Login-illustration.png"
+            alt="Login Illustration"
+            width={600}
+            height={600}
+            className="w-full max-w-107.5 h-auto object-contain"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
