@@ -1,5 +1,8 @@
-function Dashboard() {
-  return <h1>Dashboard</h1>;
+
+function page() {
+  return (
+    <div>page</div>
+  )
 }
 
-export default Dashboard;
+export default page
