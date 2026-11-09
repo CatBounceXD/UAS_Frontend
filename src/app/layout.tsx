@@ -28,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         figtree.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col m-2">
         <header>
           <NavBar />
         </header>
