@@ -1,5 +1,6 @@
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/footer";
 import NavBar from "@/components/navbar";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <NavBar />
         </header>
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
