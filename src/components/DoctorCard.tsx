@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -33,19 +34,19 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
             <p className="text-xs font-semibold text-sky-500">
               {doctor.specialty}
             </p>
-            <p className="mt-2 text-xs leading-relaxed text-slate-400 line-clamp-2">
+            <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-400">
               {doctor.bio}
             </p>
           </div>
         </div>
 
         <div className="mt-4 border-t border-slate-100 pt-3 text-center">
-          <button
-            type="button"
+          <Link
+            href={`/dashboard/doctors/${doctor.id}`}
             className="text-xs font-semibold text-sky-500 hover:text-sky-600"
           >
             View More
-          </button>
+          </Link>
         </div>
       </CardContent>
     </Card>
