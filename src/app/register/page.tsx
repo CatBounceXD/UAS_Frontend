@@ -178,7 +178,6 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div className="space-y-1.5">
                 <Label
                   htmlFor="confirmPassword"
