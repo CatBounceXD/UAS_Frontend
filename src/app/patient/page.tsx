@@ -1,33 +1,21 @@
 import React from "react";
-import { Calendar, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { Calendar, ChevronDown, Printer, Phone, MapPin } from "lucide-react";
 
 export default function PatientPage() {
   return (
-    <div className="py-6">
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-10">
+    <div className="w-full">
+      {/* ISI FORM PATIENT */}
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 sm:p-12">
           
           {/* STEPPER */}
-          <div className="flex items-center justify-center max-w-3xl mx-auto mb-10">
+          <div className="flex items-center justify-center max-w-md mx-auto mb-12">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
                 ✓
               </div>
               <span className="text-sm font-semibold text-blue-600">Patient Information</span>
-            </div>
-            <div className="flex-1 h-0.5 bg-blue-500 mx-4"></div>
-            <div className="flex items-center space-x-3 opacity-60">
-              <div className="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-sm">
-                2
-              </div>
-              <span className="text-sm font-medium text-gray-700 hidden sm:inline">Insurance Information</span>
-            </div>
-            <div className="flex-1 h-0.5 bg-gray-300 mx-4"></div>
-            <div className="flex items-center space-x-3 opacity-40">
-              <div className="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm">
-                3
-              </div>
-              <span className="text-sm font-medium text-gray-500 hidden sm:inline">Appointment Information</span>
             </div>
           </div>
 
@@ -36,26 +24,15 @@ export default function PatientPage() {
             <span className="text-blue-600">&lt;</span> Patient Information
           </h1>
 
-          {/* FORM - 3 Columns Grid */}
+          {/* FORM */}
           <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
               <div>
                 <label htmlFor="name" className="block text-xs font-semibold text-gray-700 uppercase mb-2">Name</label>
                 <input 
                   id="name"
                   type="text" 
                   placeholder="ex. John smith" 
-                  className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-xs font-semibold text-gray-700 uppercase mb-2">Email</label>
-                <input 
-                  id="email"
-                  type="email" 
-                  placeholder="ex. john.smith@domain.com" 
                   className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
               </div>
@@ -173,7 +150,6 @@ export default function PatientPage() {
                   className="w-full bg-gray-50 border border-gray-200 rounded-md px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
               </div>
-
             </div>
 
             <div className="flex justify-end pt-6">
@@ -187,6 +163,65 @@ export default function PatientPage() {
           </form>
         </div>
       </div>
+
+      {/* FOOTER */}
+      <footer className="bg-white border-t border-gray-200 mt-12 text-gray-600 text-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <p className="text-xs text-gray-700 font-medium leading-relaxed">
+                &ldquo;We are here to provide you the best care for your health problems!&rdquo;
+              </p>
+              <div className="space-y-1 pt-2">
+                <p className="font-bold text-gray-900 text-sm">Contact Us</p>
+                <p className="flex items-center gap-2 text-xs text-gray-600">
+                  <Printer className="w-3.5 h-3.5 text-blue-500" /> 081234567890
+                </p>
+                <p className="flex items-center gap-2 text-xs text-gray-600">
+                  <Phone className="w-3.5 h-3.5 text-blue-500" /> 081234567890
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p className="font-bold text-gray-900 mb-4">Quick Links</p>
+              <ul className="space-y-2 text-xs">
+                <li><Link href="/" className="hover:text-blue-600">Home</Link></li>
+                <li><Link href="#" className="hover:text-blue-600">Our Team</Link></li>
+                <li><Link href="/patient" className="hover:text-blue-600">Patients</Link></li>
+                <li><Link href="#" className="hover:text-blue-600">Education</Link></li>
+                <li><Link href="/contact" className="hover:text-blue-600">Contact Us</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="font-bold text-gray-900 mb-4">Follow Us</p>
+              <div className="flex space-x-3">
+                <Link href="#" className="w-8 h-8 bg-blue-600 text-white rounded flex items-center justify-center hover:opacity-90 font-bold text-xs">
+                  f
+                </Link>
+                <Link href="#" className="w-8 h-8 bg-pink-600 text-white rounded flex items-center justify-center hover:opacity-90 font-bold text-xs">
+                  ig
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="font-bold text-gray-900 mb-4">Locations</p>
+              <div className="flex items-start space-x-2 text-xs">
+                <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                <p className="text-gray-600 leading-relaxed">
+                  6118 Parkway Drive, Corpus Christi, Texas 78414
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100 mt-10 pt-6 text-xs text-gray-500 leading-relaxed">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa exercitationem veritatis velit, repellendus at fuga nobis quasi officiis atque dolor rerum distinctio beatae error vel est reiciendis ex nulla accusantium.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
