@@ -1,30 +1,77 @@
-
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+type CheckInResult = {
+  id: number;
+  queueNumber: string;
+  appointmentTime: string;
+  room: string;
+  floor: number;
+};
 
 export default function CheckInStep3() {
   const router = useRouter();
 
+  const [queue, setQueue] = useState<CheckInResult | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const savedResult = sessionStorage.getItem("checkInResult");
+
+    if (!savedResult) {
+      router.replace("/checkin/step-2");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(savedResult) as CheckInResult;
+
+      if (
+        !parsed.queueNumber ||
+        !parsed.appointmentTime ||
+        !parsed.room ||
+        parsed.floor === undefined
+      ) {
+        router.replace("/checkin/step-2");
+        return;
+      }
+
+          setQueue(parsed);
+          setIsLoading(false);
+        } catch {
+          router.replace("/checkin/step-2");
+        }
+      }, [router]);
+
+          if (isLoading || !queue) {
+            return (
+              <main className="flex min-h-screen items-center justify-center bg-gray-50">
+                <p className="text-gray-500">Loading queue information...</p>
+              </main>
+            );
+          }
+
   const queueInformation = [
     {
       title: "Appointment Time",
-      value: "To Be Announced",
+      value: queue.appointmentTime,
       description: "Your appointment schedule",
     },
     {
       title: "Patient Number",
-      value: "Not Assigned",
+      value: queue.queueNumber,
       description: "Your queue number",
     },
     {
       title: "Room Number",
-      value: "To Be Announced",
+      value: queue.room,
       description: "Your consultation room",
     },
     {
       title: "Floor Number",
-      value: "To Be Announced",
+      value: String(queue.floor),
       description: "Your consultation floor",
     },
   ];
@@ -33,7 +80,6 @@ export default function CheckInStep3() {
     <main className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
 
-        {/* Header */}
         <p className="mb-2 text-sm font-semibold text-blue-600">
           PATIENT CHECK-IN
         </p>
@@ -93,9 +139,8 @@ export default function CheckInStep3() {
         {/* Information */}
         <div className="mt-6 rounded-xl bg-blue-50 p-4">
           <p className="text-sm leading-relaxed text-blue-700">
-            Please wait for your appointment details to be updated.
-            Make sure to arrive on time and follow the instructions
-            provided by the healthcare staff.
+            Please keep your queue number. Make sure to arrive on time
+            and follow the instructions provided by the healthcare staff.
           </p>
         </div>
 
@@ -104,7 +149,7 @@ export default function CheckInStep3() {
           <button
             type="button"
             onClick={() => router.push("/checkin/step-2")}
-            className="w-full rounded-lg border border-gray-300 px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
+            className="w-full rounded-lg border border-gray-300 px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
           >
             Back
           </button>

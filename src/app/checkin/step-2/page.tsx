@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createCheckIn } from "../actions";
 
 export default function CheckInStep2() {
   const router = useRouter();
@@ -10,8 +10,9 @@ export default function CheckInStep2() {
   const [countdown, setCountdown] = useState(10);
   const [isApproved, setIsApproved] = useState(false);
   const [hasData, setHasData] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
 
-  // Memastikan pasien sudah mengisi Step 1
   useEffect(() => {
     const patientData = sessionStorage.getItem("checkInPatient");
 
@@ -23,7 +24,6 @@ export default function CheckInStep2() {
     setHasData(true);
   }, [router]);
 
-  // Countdown verifikasi otomatis selama 10 detik
   useEffect(() => {
     if (!hasData || isApproved) return;
 
@@ -39,10 +39,69 @@ export default function CheckInStep2() {
     return () => clearTimeout(timer);
   }, [countdown, hasData, isApproved]);
 
+  const handleContinue = async () => {
+    if (isSaving) return;
+
+    setIsSaving(true);
+    setError("");
+
+    try {
+      const savedResult = sessionStorage.getItem("checkInResult");
+
+      // Jika pasien sudah mendapatkan nomor antrean,
+      // gunakan hasil sebelumnya agar tidak membuat antrean baru.
+     if (savedResult) {
+  const previousResult = JSON.parse(savedResult);
+
+  if (
+    previousResult.appointmentTime &&
+    previousResult.room &&
+    previousResult.floor !== undefined
+  ) {
+    router.push("/checkin/step-3");
+    return;
+  }
+
+  sessionStorage.removeItem("checkInResult");
+}
+
+      const patientData = sessionStorage.getItem("checkInPatient");
+
+      if (!patientData) {
+        router.replace("/checkin/step-1");
+        return;
+      }
+
+      const result = await createCheckIn(JSON.parse(patientData));
+
+      if (!result.success) {
+  setError(result.message ?? "Data check-in gagal disimpan.");
+  return;
+}
+
+      sessionStorage.setItem(
+  "checkInResult",
+  JSON.stringify({
+    id: result.id,
+    queueNumber: result.queueNumber,
+    appointmentTime: result.appointmentTime,
+    room: result.room,
+    floor: result.floor,
+  })
+);
+
+      router.push("/checkin/step-3");
+    } catch (error) {
+      console.error(error);
+      setError("Terjadi kesalahan. Silakan coba kembali.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
       <div className="w-full max-w-xl rounded-2xl bg-white p-8 text-center shadow-sm">
-
         <p className="mb-2 text-sm font-semibold text-blue-600">
           PATIENT CHECK-IN
         </p>
@@ -57,9 +116,7 @@ export default function CheckInStep2() {
             : "Please wait while we verify your patient information."}
         </p>
 
-        {/* Verification Status */}
         <div className="mb-8 rounded-xl bg-gray-50 p-8">
-
           {isApproved ? (
             <>
               <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-4xl text-green-600">
@@ -71,7 +128,7 @@ export default function CheckInStep2() {
               </h2>
 
               <p className="text-sm text-gray-500">
-                Your information has been automatically approved.
+                Your information has been successfully verified.
               </p>
             </>
           ) : (
@@ -104,15 +161,19 @@ export default function CheckInStep2() {
           )}
         </div>
 
-        {/* Action Button */}
+        {error && (
+          <p className="mb-4 text-sm text-red-600">{error}</p>
+        )}
+
         {isApproved && (
-        <button
-        type="button"
-        onClick={() => router.push("/checkin/step-3")}
-        className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-        >
-        Continue to Your Turn
-        </button>
+          <button
+            type="button"
+            onClick={handleContinue}
+            disabled={isSaving}
+            className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSaving ? "Saving Check-In..." : "Continue to Your Turn"}
+          </button>
         )}
 
         {!isApproved && (
