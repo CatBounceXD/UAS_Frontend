@@ -1,6 +1,5 @@
-
-import ArticleCard from "@/components/ArticleCard";
-import ResourceCard from "@/components/ResourceCard";
+import ArticleCard from "@/features/resources/components/ArticleCard";
+import ResourceCard from "@/features/resources/components/ResourceCard";
 
 const photos = [
   {
@@ -103,7 +102,6 @@ export default function ResourcePage() {
             ))}
           </div>
         </div>
-      
       </section>
 
       {/* Articles Section */}

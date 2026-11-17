@@ -1,7 +1,6 @@
-
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
 import { CalendarDays, UserRound } from "lucide-react";
+import Image from "next/image";
+import { Card } from "@/shared/components/ui/card";
 
 type ArticleCardProps = {
   image: string;
@@ -25,17 +24,13 @@ export default function ArticleCard({
         alt={title}
         width={800}
         height={600}
-        className="aspect-[4/3] w-full rounded object-cover"
+        className="aspect-4/3 w-full rounded object-cover"
       />
 
       <div className="space-y-2 p-1">
-        <h3 className="text-sm font-semibold text-blue-900">
-          {title}
-        </h3>
+        <h3 className="text-sm font-semibold text-blue-900">{title}</h3>
 
-        <p className="text-xs text-gray-500">
-          {description}
-        </p>
+        <p className="text-xs text-gray-500">{description}</p>
 
         <div className="flex flex-wrap items-center gap-3 text-[10px] text-gray-400">
           <span className="flex items-center gap-1">

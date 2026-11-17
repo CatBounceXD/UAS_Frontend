@@ -1,5 +1,5 @@
-import DoctorCard, { type Doctor } from "@/components/DoctorCard";
-import { Button } from "@/components/ui/button";
+import DoctorCard, { type Doctor } from "@/features/doctors/components/DoctorCard";
+import { Button } from "@/shared/components/ui/button";
 
 const doctors: Doctor[] = [
   {
