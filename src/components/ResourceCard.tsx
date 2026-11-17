@@ -14,7 +14,7 @@ export default function ResourceCard({
   description,
 }: ResourceCardProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="flex h-full flex-col overflow-hidden">
       <Image
         src={image}
         alt={title}
@@ -23,7 +23,7 @@ export default function ResourceCard({
         className="aspect-[4/3] w-full object-cover"
       />
 
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         <h3 className="mb-2 font-semibold text-blue-900">
           {title}
         </h3>
