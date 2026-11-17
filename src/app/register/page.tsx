@@ -1,8 +1,9 @@
 "use client";
 
-import { Eye, EyeOff, HeartPulse, Menu, Search } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -12,64 +13,44 @@ import { Label } from "@/components/ui/label";
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    const phone = formData.get("phone") as string;
+
+    if (password.length < 8) {
+      alert("Password harus minimal 8 karakter!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Password dan Confirm Password tidak sama!");
+      return;
+    }
+
+    if (!/^[0-9]{12,13}$/.test(phone)) {
+      alert("Nomor telepon harus terdiri dari 12-13 digit!");
+      return;
+    }
+
+    alert("Registrasi berhasil!");
+
+    router.push("/login");
+  };
 
   return (
-    <main className="min-h-screen bg-[#f5f7f9]">
-      <header className="bg-white">
-        <div className="max-w-7xl mx-auto px-5 md:px-10 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-blue-700 text-white rounded-full p-2">
-              <HeartPulse size={22} />
-            </div>
-            <div className="leading-tight">
-              <p className="text-[11px] font-bold text-blue-900">ORTHOPAEDIC</p>
-              <p className="text-[11px] font-bold text-blue-900">CENTER</p>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-7 text-sm text-gray-500">
-            <Link href="/">Home</Link>
-            <Link href="/education">Education</Link>
-            <Link href="/contact">Contact</Link>
-
-            <Search size={18} className="text-blue-500" />
-
-            <Link href="/register" className="text-blue-500 font-medium">
-              Sign Up
-            </Link>
-
-            <Link href="/login">
-              <Button className="px-8 bg-[#2196F3] hover:bg-blue-600">
-                Login
-              </Button>
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-4 md:hidden">
-            <Search size={20} className="text-blue-500" />
-
-            <button type="button" onClick={() => setMenuOpen(!menuOpen)}>
-              <Menu size={25} />
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div className="md:hidden flex flex-col gap-4 px-6 py-4 bg-white border-t text-sm">
-            <Link href="/">Home</Link>
-            <Link href="/education">Education</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/register" className="text-blue-500">
-              Sign Up
-            </Link>
-            <Link href="/login">Login</Link>
-          </div>
-        )}
-      </header>
-
+    <div className="min-h-screen bg-[#f5f7f9]">
+   
       <section className="max-w-7xl mx-auto px-5 md:px-10 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          
           <div className="order-1 md:order-2 flex justify-center items-center">
             <Image
               src="/register-illustration.jpg"
@@ -95,8 +76,8 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-              {/* Full Name */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+             
               <div className="space-y-1.5">
                 <Label htmlFor="name" className="text-xs text-slate-600">
                   Full Name
@@ -104,6 +85,7 @@ export default function RegisterPage() {
 
                 <Input
                   id="name"
+                  name="name"
                   type="text"
                   placeholder="ex. john smith"
                   required
@@ -118,6 +100,7 @@ export default function RegisterPage() {
 
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="ex. john.smith@domain.com"
                   required
@@ -133,8 +116,13 @@ export default function RegisterPage() {
 
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
-                    placeholder="ex. +0 123 456 7890"
+                    placeholder="081234567890"
+                    minLength={12}
+                    maxLength={13}
+                    pattern="[0-9]{12,13}"
+                    inputMode="numeric"
                     required
                     className="bg-[#f6f7f9] border-none text-sm h-10"
                   />
@@ -147,6 +135,7 @@ export default function RegisterPage() {
 
                   <Input
                     id="dob"
+                    name="dob"
                     type="date"
                     required
                     className="bg-[#f6f7f9] border-none text-sm h-10"
@@ -162,8 +151,10 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your Password"
+                    minLength={8}
                     required
                     className="bg-[#f6f7f9] border-none text-sm h-10 pr-10"
                   />
@@ -176,6 +167,10 @@ export default function RegisterPage() {
                     {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                   </button>
                 </div>
+
+                <p className="text-[10px] text-slate-400">
+                  Password must contain at least 8 characters.
+                </p>
               </div>
 
               <div className="space-y-1.5">
@@ -189,8 +184,10 @@ export default function RegisterPage() {
                 <div className="relative">
                   <Input
                     id="confirmPassword"
+                    name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter your Password"
+                    minLength={8}
                     required
                     className="bg-[#f6f7f9] border-none text-sm h-10 pr-10"
                   />
@@ -229,6 +226,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -24,11 +25,16 @@ const navItems = [
 export default function NavBar() {
   const pathname = usePathname();
 
+  if (pathname === "/login" || pathname === "/register") {
+    return null;
+  }
+
   return (
     <NavigationMenu className="w-full max-w-full">
       <NavigationMenuList className="w-full flex-1 justify-end gap-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
+
           return (
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
