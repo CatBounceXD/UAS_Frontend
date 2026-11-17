@@ -48,8 +48,6 @@ export default function CheckInStep2() {
     try {
       const savedResult = sessionStorage.getItem("checkInResult");
 
-      // Jika pasien sudah mendapatkan nomor antrean,
-      // gunakan hasil sebelumnya agar tidak membuat antrean baru.
      if (savedResult) {
   const previousResult = JSON.parse(savedResult);
 
