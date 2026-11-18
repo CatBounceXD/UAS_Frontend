@@ -1,6 +1,6 @@
-import DoctorCard from "@/components/DoctorCard";
-import { Button } from "@/components/ui/button";
+import DoctorCard from "@/features/doctors/components/DoctorCard";
 import { DOCTORS_DATA } from "@/lib/api";
+import { Button } from "@/shared/components/ui/button";
 
 export default function DashboardPage() {
   return (
