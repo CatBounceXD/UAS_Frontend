@@ -1,22 +1,38 @@
-
+// src/db/seeds/seed.ts
+import { DOCTORS_DATA } from "../../lib/api";
 import { db } from "../index";
-import { dokter } from "../schema";
+import { doctors } from "../schema";
 
 async function seed() {
-  console.log("seeding database...");
+  console.log("Seeding database...");
 
   try {
-    console.log("Membersihkan data lama...");
-    await db.delete(dokter);
+    console.log("Membersihkan data doctors lama...");
+    await db.delete(doctors);
 
-    console.log("Memasukkan data dokter...");
-    await db.insert(dokter).values([
-      { nama: "Dr. Budi Santoso", spesialis: "Umum" },
-      { nama: "Dr. Siti Aminah", spesialis: "Anak" },
-      { nama: "Dr. Andi Wijaya", spesialis: "Penyakit Dalam" },
-    ]);
+    console.log("Memasukkan data dokter dari DOCTORS_DATA...");
+    const mappedDoctors = DOCTORS_DATA.map((doc) => ({
+      name: doc.name,
+      specialty: doc.specialty,
+      bio: doc.bio,
+      avatarUrl: doc.avatarUrl,
+      rating: doc.rating,
+      specialtySummary: doc.specialtySummary,
+      procedures: doc.procedures,
+      education: doc.education,
+      training: doc.training,
+      affiliations: doc.affiliations,
+      aboutParagraphs: doc.aboutParagraphs,
+      certificates: doc.certificates,
+      media: doc.media,
+      contactEmail: doc.contact.email,
+      contactPhone: doc.contact.phone,
+    }));
 
-    console.log("Seeding berhasil!");
+    await db.insert(doctors).values(mappedDoctors);
+
+    console.log("Seeding doctors berhasil!");
+    process.exit(0);
   } catch (error) {
     console.error("Terjadi kesalahan saat seeding:", error);
     process.exit(1);

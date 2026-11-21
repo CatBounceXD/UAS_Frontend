@@ -1,8 +1,8 @@
-import CommentSection from "@/components/CommentSection";
+import { ArrowLeft, UserRound } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, MessageCircle, UserRound, ArrowLeft } from "lucide-react";
+import CommentSection from "@/shared/components/CommentSection";
 
 const articles = [
   {
@@ -102,7 +102,6 @@ export default async function ArticleDetailPage({
   return (
     <main className="min-h-screen bg-[#f7f9fc] px-5 py-10">
       <article className="mx-auto max-w-4xl bg-white px-6 py-8 shadow-sm md:px-12 md:py-10">
-
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-xs text-gray-400">
           <Link href="/resource" className="hover:text-blue-600">
@@ -135,16 +134,13 @@ export default async function ArticleDetailPage({
           </div>
 
           <div className="text-xs">
-            <p className="font-medium text-gray-800">
-              {article.author}
-            </p>
+            <p className="font-medium text-gray-800">{article.author}</p>
             <p className="text-gray-400">Author</p>
           </div>
         </div>
 
         {/* Article Content */}
         <div className="space-y-6 text-sm leading-7 text-gray-600">
-
           <p>{article.introduction}</p>
 
           <section>
@@ -152,12 +148,12 @@ export default async function ArticleDetailPage({
               {article.heading}
             </h2>
 
-           {article.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="mb-4">
+            {article.paragraphs.map((paragraph) => (
+              <p key={paragraph} className="mb-4">
                 {paragraph}
-         </p>
+              </p>
             ))}
-            </section>
+          </section>
 
           {/* Quote */}
           <blockquote className="border-l-2 border-gray-300 py-2 pl-7 text-sm italic leading-7 text-gray-600">
@@ -165,13 +161,11 @@ export default async function ArticleDetailPage({
           </blockquote>
 
           <p>{article.closing}</p>
-
         </div>
         {/* Comment Section */}
         <CommentSection />
         {/* Back Button */}
         <div className="mt-10 border-t border-gray-100 pt-6">
-            
           <Link
             href="/resource"
             className="inline-flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900"
@@ -180,7 +174,6 @@ export default async function ArticleDetailPage({
             Back to Resources
           </Link>
         </div>
-
       </article>
     </main>
   );

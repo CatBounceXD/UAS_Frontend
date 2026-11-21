@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function CheckInStep4() {
   const router = useRouter();
@@ -20,10 +20,7 @@ export default function CheckInStep4() {
     };
 
     // Simpan review sementara di browser
-    sessionStorage.setItem(
-      "checkInReview",
-      JSON.stringify(reviewData)
-    );
+    sessionStorage.setItem("checkInReview", JSON.stringify(reviewData));
 
     setReviewSubmitted(true);
   };
@@ -31,7 +28,6 @@ export default function CheckInStep4() {
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
-
         <p className="mb-2 text-sm font-semibold text-blue-600">
           PATIENT CHECK-IN
         </p>
@@ -47,8 +43,8 @@ export default function CheckInStep4() {
             </h1>
 
             <p className="mb-8 text-gray-500">
-              Your review has been successfully submitted.
-              Thank you for sharing your experience with us.
+              Your review has been successfully submitted. Thank you for sharing
+              your experience with us.
             </p>
 
             <button
@@ -66,12 +62,11 @@ export default function CheckInStep4() {
             </h1>
 
             <p className="mb-8 text-gray-500">
-              We would love to hear about your experience.
-              Please share your feedback with us.
+              We would love to hear about your experience. Please share your
+              feedback with us.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-
               {/* Rating */}
               <div>
                 <p className="mb-3 font-medium text-gray-700">
@@ -87,9 +82,7 @@ export default function CheckInStep4() {
                       aria-label={`Rate ${star} out of 5 stars`}
                       aria-pressed={rating === star}
                       className={`text-4xl transition ${
-                        star <= rating
-                          ? "text-yellow-400"
-                          : "text-gray-300"
+                        star <= rating ? "text-yellow-400" : "text-gray-300"
                       }`}
                     >
                       ★

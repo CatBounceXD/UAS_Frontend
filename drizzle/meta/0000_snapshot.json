@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "id": "48df4cdb-92a8-45f2-93ee-c1aa38d58425",
-=======
   "id": "2b8b60d4-b155-41f9-8823-6d00b73bb0bc",
->>>>>>> main
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -265,8 +261,6 @@
           "primaryKey": false,
           "notNull": false
         },
-<<<<<<< HEAD
-=======
         "phone": {
           "name": "phone",
           "type": "text",
@@ -279,7 +273,6 @@
           "primaryKey": false,
           "notNull": false
         },
->>>>>>> main
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -415,7 +408,6 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-<<<<<<< HEAD
     },
     "public.appointment": {
       "name": "appointment",
@@ -511,8 +503,6 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-=======
->>>>>>> main
     }
   },
   "enums": {},

@@ -1,7 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import { db } from "@/db";
 import { checkIn } from "@/db/schema";
+import { auth } from "@/lib/auth";
 
 type CheckInData = {
   fullName: string;
@@ -14,6 +16,17 @@ type CheckInData = {
 
 export async function createCheckIn(data: CheckInData) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return {
+        success: false as const,
+        message: "Sesi berakhir. Login kembali untuk check-in.",
+      };
+    }
+
     const [result] = await db
       .insert(checkIn)
       .values({

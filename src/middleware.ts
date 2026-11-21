@@ -6,9 +6,8 @@ export function middleware(req: NextRequest) {
   const sessionCookie = getSessionCookie(req);
   const isProtected =
     req.nextUrl.pathname.startsWith("/dashboard") ||
-    req.nextUrl.pathname.startsWith("/patient") ||
-    req.nextUrl.pathname.startsWith("/resource") ||
-    req.nextUrl.pathname.startsWith("/visit-request");
+    req.nextUrl.pathname.startsWith("/visit-request") ||
+    req.nextUrl.pathname.startsWith("/checkin");
 
   if (isProtected && !sessionCookie) {
     return NextResponse.redirect(new URL("/login", req.url));

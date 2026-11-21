@@ -28,13 +28,13 @@ export default function ArticleCard({
           alt={title}
           width={800}
           height={600}
-          className="aspect-[4/3] w-full rounded object-cover"
+          className="aspect-4/3 w-full rounded object-cover"
         />
 
         <div className="flex flex-1 flex-col space-y-2 p-1">
           <h3 className="text-sm font-semibold text-blue-900">{title}</h3>
 
-          <p className="min-h-[2.5rem] line-clamp-2 text-xs text-gray-500">
+          <p className="min-h-10 line-clamp-2 text-xs text-gray-500">
             {description}
           </p>
 
