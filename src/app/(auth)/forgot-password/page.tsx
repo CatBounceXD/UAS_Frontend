@@ -1,13 +1,10 @@
-
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import {
   Card,
   CardContent,
@@ -16,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
 
 export default function ForgotPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,11 +46,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f7f9] flex items-center justify-center p-6">
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-5xl w-full">
-
         <Card className="w-full max-w-sm mx-auto">
-
           {success ? (
             <>
               <CardHeader className="text-center">
@@ -64,8 +60,8 @@ export default function ForgotPasswordPage() {
                 </CardTitle>
 
                 <CardDescription>
-                  Your new password has been created.
-                  You can now return to the login page.
+                  Your new password has been created. You can now return to the
+                  login page.
                 </CardDescription>
               </CardHeader>
 
@@ -80,9 +76,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               <CardHeader>
-                <CardTitle className="text-xl">
-                  Forgot Password?
-                </CardTitle>
+                <CardTitle className="text-xl">Forgot Password?</CardTitle>
 
                 <CardDescription>
                   Create a new password for your Orthopaedic Center account.
@@ -95,11 +89,8 @@ export default function ForgotPasswordPage() {
                   onSubmit={handleResetPassword}
                   className="flex flex-col gap-5"
                 >
-
                   <div className="grid gap-2">
-                    <Label htmlFor="email">
-                      Email Address
-                    </Label>
+                    <Label htmlFor="email">Email Address</Label>
 
                     <div className="relative">
                       <Input
@@ -119,9 +110,7 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="password">
-                      New Password
-                    </Label>
+                    <Label htmlFor="password">New Password</Label>
 
                     <div className="relative">
                       <Input
@@ -184,11 +173,7 @@ export default function ForgotPasswordPage() {
                     </div>
                   </div>
 
-                  {error && (
-                    <p className="text-sm text-red-500">
-                      {error}
-                    </p>
-                  )}
+                  {error && <p className="text-sm text-red-500">{error}</p>}
 
                   <Button
                     type="submit"
@@ -196,24 +181,19 @@ export default function ForgotPasswordPage() {
                   >
                     Reset Password
                   </Button>
-
                 </form>
               </CardContent>
 
               <CardFooter className="justify-center">
                 <p className="text-sm">
                   Remember your password?{" "}
-                  <Link
-                    href="/login"
-                    className="text-blue-500 hover:underline"
-                  >
+                  <Link href="/login" className="text-blue-500 hover:underline">
                     Back to Login
                   </Link>
                 </p>
               </CardFooter>
             </>
           )}
-
         </Card>
 
         <div className="flex justify-center items-center">
@@ -227,12 +207,11 @@ export default function ForgotPasswordPage() {
             </h2>
 
             <p className="text-sm text-slate-500 mt-2 max-w-sm">
-              Create a strong new password to keep
-              your Orthopaedic Center account secure.
+              Create a strong new password to keep your Orthopaedic Center
+              account secure.
             </p>
           </div>
         </div>
-
       </div>
     </div>
   );

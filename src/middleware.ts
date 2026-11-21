@@ -1,5 +1,3 @@
-// src/middleware.ts
-
 import { getSessionCookie } from "better-auth/cookies";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
