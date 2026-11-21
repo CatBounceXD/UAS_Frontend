@@ -1,6 +1,6 @@
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "../shared/globals.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 

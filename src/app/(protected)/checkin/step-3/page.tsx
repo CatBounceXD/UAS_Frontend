@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type CheckInResult = {
   id: number;
@@ -38,20 +38,20 @@ export default function CheckInStep3() {
         return;
       }
 
-          setQueue(parsed);
-          setIsLoading(false);
-        } catch {
-          router.replace("/checkin/step-2");
-        }
-      }, [router]);
+      setQueue(parsed);
+      setIsLoading(false);
+    } catch {
+      router.replace("/checkin/step-2");
+    }
+  }, [router]);
 
-          if (isLoading || !queue) {
-            return (
-              <main className="flex min-h-screen items-center justify-center bg-gray-50">
-                <p className="text-gray-500">Loading queue information...</p>
-              </main>
-            );
-          }
+  if (isLoading || !queue) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-gray-50">
+        <p className="text-gray-500">Loading queue information...</p>
+      </main>
+    );
+  }
 
   const queueInformation = [
     {
@@ -79,7 +79,6 @@ export default function CheckInStep3() {
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="mx-auto max-w-2xl rounded-2xl bg-white p-8 shadow-sm">
-
         <p className="mb-2 text-sm font-semibold text-blue-600">
           PATIENT CHECK-IN
         </p>
@@ -89,8 +88,8 @@ export default function CheckInStep3() {
         </h1>
 
         <p className="mb-8 text-gray-500">
-          Your check-in has been completed. Please check your appointment
-          and queue information below.
+          Your check-in has been completed. Please check your appointment and
+          queue information below.
         </p>
 
         {/* Status */}
@@ -121,17 +120,13 @@ export default function CheckInStep3() {
               key={item.title}
               className="rounded-xl border border-gray-200 p-5"
             >
-              <p className="mb-2 text-sm text-gray-500">
-                {item.title}
-              </p>
+              <p className="mb-2 text-sm text-gray-500">{item.title}</p>
 
               <p className="mb-1 text-lg font-bold text-gray-800">
                 {item.value}
               </p>
 
-              <p className="text-xs text-gray-400">
-                {item.description}
-              </p>
+              <p className="text-xs text-gray-400">{item.description}</p>
             </div>
           ))}
         </div>
@@ -139,8 +134,8 @@ export default function CheckInStep3() {
         {/* Information */}
         <div className="mt-6 rounded-xl bg-blue-50 p-4">
           <p className="text-sm leading-relaxed text-blue-700">
-            Please keep your queue number. Make sure to arrive on time
-            and follow the instructions provided by the healthcare staff.
+            Please keep your queue number. Make sure to arrive on time and
+            follow the instructions provided by the healthcare staff.
           </p>
         </div>
 

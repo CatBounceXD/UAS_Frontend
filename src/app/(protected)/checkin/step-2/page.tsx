@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCheckIn } from "../actions";
+import { useEffect, useState } from "react";
+import { createCheckIn } from "../../../../features/checkin/actions";
 
 export default function CheckInStep2() {
   const router = useRouter();
@@ -48,20 +48,20 @@ export default function CheckInStep2() {
     try {
       const savedResult = sessionStorage.getItem("checkInResult");
 
-     if (savedResult) {
-  const previousResult = JSON.parse(savedResult);
+      if (savedResult) {
+        const previousResult = JSON.parse(savedResult);
 
-  if (
-    previousResult.appointmentTime &&
-    previousResult.room &&
-    previousResult.floor !== undefined
-  ) {
-    router.push("/checkin/step-3");
-    return;
-  }
+        if (
+          previousResult.appointmentTime &&
+          previousResult.room &&
+          previousResult.floor !== undefined
+        ) {
+          router.push("/checkin/step-3");
+          return;
+        }
 
-  sessionStorage.removeItem("checkInResult");
-}
+        sessionStorage.removeItem("checkInResult");
+      }
 
       const patientData = sessionStorage.getItem("checkInPatient");
 
@@ -73,20 +73,20 @@ export default function CheckInStep2() {
       const result = await createCheckIn(JSON.parse(patientData));
 
       if (!result.success) {
-  setError(result.message ?? "Data check-in gagal disimpan.");
-  return;
-}
+        setError(result.message ?? "Data check-in gagal disimpan.");
+        return;
+      }
 
       sessionStorage.setItem(
-  "checkInResult",
-  JSON.stringify({
-    id: result.id,
-    queueNumber: result.queueNumber,
-    appointmentTime: result.appointmentTime,
-    room: result.room,
-    floor: result.floor,
-  })
-);
+        "checkInResult",
+        JSON.stringify({
+          id: result.id,
+          queueNumber: result.queueNumber,
+          appointmentTime: result.appointmentTime,
+          room: result.room,
+          floor: result.floor,
+        }),
+      );
 
       router.push("/checkin/step-3");
     } catch (error) {
@@ -159,9 +159,7 @@ export default function CheckInStep2() {
           )}
         </div>
 
-        {error && (
-          <p className="mb-4 text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
         {isApproved && (
           <button

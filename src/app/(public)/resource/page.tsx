@@ -55,7 +55,7 @@ const photos = [
 const articles = [
   {
     id: "article-1",
-    image: "/features/resources/assets/Resource1.png",
+    image: "/Resource1.png",
     title: "Adult Reconstruction",
     description: "Learn more about Striker's Mako Total Hip replacement.",
     date: "12-Aug-2022",
@@ -63,7 +63,7 @@ const articles = [
   },
   {
     id: "article-2",
-    image: "features/resources/assets/Resource2.png",
+    image: "/Resource2.png",
     title: "Orthopedic Treatment",
     description: "Discover modern orthopedic treatment and care.",
     date: "12-Aug-2022",
@@ -71,7 +71,7 @@ const articles = [
   },
   {
     id: "article-3",
-    image: "features/resources/assets/Resource3.jpg",
+    image: "/Resource3.jpg",
     title: "Patient Recovery",
     description: "Understanding the recovery process after treatment.",
     date: "12-Aug-2022",
@@ -79,7 +79,7 @@ const articles = [
   },
   {
     id: "article-4",
-    image: "features/resources/assets/Resource4.jpg",
+    image: "/Resource4.jpg",
     title: "Advanced Healthcare",
     description: "Explore advanced technology in healthcare.",
     date: "12-Aug-2022",
