@@ -1,3 +1,4 @@
+import Link from "next/link";
 import DoctorCard from "@/features/doctors/components/DoctorCard";
 import { DOCTORS_DATA } from "@/lib/api";
 import { Button } from "@/shared/components/ui/button";
@@ -14,10 +15,10 @@ export default function DashboardPage() {
             </h1>
           </div>
           <Link href="/checkin">
-          <Button className="rounded-full bg-sky-500 px-6 py-2.5 font-medium text-white shadow-sm hover:bg-sky-600">
-          Check - In
-          </Button>
-</Link>
+            <Button className="rounded-full bg-sky-500 px-6 py-2.5 font-medium text-white shadow-sm hover:bg-sky-600">
+              Check - In
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
