@@ -10,12 +10,16 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DOCTORS_DATA,
   type VisitRequestPayload,
   visitRequestApi,
 } from "@/lib/api";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 
 const STEPS = [
   { number: 1, label: "Patient Information" },
@@ -31,8 +35,7 @@ const labelClassName = "mb-2 block text-sm font-medium text-[#163A5F]";
 export default function DoctorAppointmentPage() {
   const params = useParams<{ id: string }>();
   const selectedDoctor =
-    DOCTORS_DATA.find((doc) => String(doc.id) === params.id) ??
-    DOCTORS_DATA[0];
+    DOCTORS_DATA.find((doc) => String(doc.id) === params.id) ?? DOCTORS_DATA[0];
 
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [formData, setFormData] = useState<VisitRequestPayload>({
