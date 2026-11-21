@@ -26,7 +26,7 @@ interface NavBarProps {
 
 const publicNavItems = [
   { label: "Beranda", href: "/" },
-  { label: "Edukasi", href: "/education" },
+  { label: "Edukasi", href: "/resource" },
   { label: "Kontak", href: "/contact" },
 ];
 
