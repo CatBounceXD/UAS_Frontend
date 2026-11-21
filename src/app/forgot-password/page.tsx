@@ -7,7 +7,7 @@ export default function ForgotPasswordPage() {
     <div className="w-full">
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* KOLOM KIRI: CARD FORM FORGOT PASSWORD */}
+          
           <div className="lg:col-span-5">
             <div className="bg-white rounded-xl border border-gray-100 shadow-2xs p-6 sm:p-8">
               <Link
@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          {/* KOLOM KANAN: ILUSTRASI TANDA TANYA & KARAKTER */}
+  
           <div className="lg:col-span-7 flex items-center justify-center">
             <svg
               viewBox="0 0 640 480"
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
               role="img"
               aria-label="Illustration of a person thinking next to a large blue question mark"
             >
-              {/* Garis lantai tipis */}
+            
               <line
                 x1="50"
                 y1="408"
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
                 strokeWidth="1.5"
               />
 
-              {/* Daun dekoratif kiri */}
+           
               <path
                 d="M115 408 C95 350, 90 295, 110 245 C128 290, 134 345, 128 408 Z"
                 fill="#38BDF8"
@@ -90,23 +90,23 @@ export default function ForgotPasswordPage() {
                 strokeWidth="1.5"
               />
 
-              {/* Tanda tanya besar - sisi bayangan */}
+             
               <path
                 d="M235 162 C235 98, 292 62, 358 62 C424 62, 476 100, 476 158 C476 206, 444 232, 412 252 C390 266, 382 280, 382 306 L320 306 C320 262, 342 238, 374 217 C398 201, 412 186, 412 160 C412 130, 388 112, 356 112 C322 112, 298 132, 296 164 Z"
                 fill="#0B5FA5"
               />
 
-              {/* Tanda tanya besar - sisi depan */}
+              
               <path
                 d="M214 162 C214 98, 271 62, 337 62 C403 62, 455 100, 455 158 C455 206, 423 232, 391 252 C369 266, 361 280, 361 306 L299 306 C299 262, 321 238, 353 217 C377 201, 391 186, 391 160 C391 130, 367 112, 335 112 C301 112, 277 132, 275 164 Z"
                 fill="#1D8FE1"
               />
 
-              {/* Titik tanda tanya - bayangan & depan */}
+         
               <circle cx="371" cy="368" r="34" fill="#0B5FA5" />
               <circle cx="350" cy="368" r="34" fill="#1D8FE1" />
 
-              {/* Speech bubble tanda tanya terbalik */}
+             
               <path
                 d="M482 54 H552 C565 54, 576 65, 576 78 V124 C576 137, 565 148, 552 148 H504 L486 166 V148 H482 C469 148, 458 137, 458 124 V78 C458 65, 469 54, 482 54 Z"
                 fill="#EFF8FF"
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
                 ¿
               </text>
 
-              {/* Kaki & sepatu karakter */}
+             
               <path
                 d="M454 276 L432 394 H406 L422 276 Z"
                 fill="#1E293B"
@@ -142,12 +142,12 @@ export default function ForgotPasswordPage() {
                 fill="#2394F0"
               />
 
-              {/* Celana gelap */}
+       
               <path
                 d="M428 242 H502 L512 292 H474 L465 264 L455 292 H420 Z"
                 fill="#1E293B"
               />
-              {/* Aksen bintik pada celana */}
+              
               <circle cx="442" cy="256" r="1.5" fill="#94A3B8" />
               <circle cx="468" cy="252" r="1.5" fill="#94A3B8" />
               <circle cx="488" cy="264" r="1.5" fill="#94A3B8" />
@@ -157,13 +157,13 @@ export default function ForgotPasswordPage() {
               <circle cx="514" cy="352" r="1.5" fill="#94A3B8" />
               <circle cx="416" cy="366" r="1.5" fill="#94A3B8" />
 
-              {/* Baju biru */}
+            
               <path
                 d="M432 162 C432 152, 444 146, 464 146 C484 146, 496 152, 496 162 L504 244 H426 Z"
                 fill="#2394F0"
               />
 
-              {/* Lengan menyilang */}
+             
               <path
                 d="M434 166 L418 214 L478 218 L478 202 L438 198 L448 172 Z"
                 fill="#1D8FE1"
@@ -173,23 +173,23 @@ export default function ForgotPasswordPage() {
                 fill="#2394F0"
               />
 
-              {/* Tangan kiri menopang dagu */}
+           
               <path
                 d="M468 148 C464 138, 468 126, 475 124 C480 123, 483 128, 483 135 L482 152 Z"
                 fill="#FDBA74"
               />
 
-              {/* Leher & kepala */}
+             
               <rect x="458" y="132" width="14" height="18" rx="4" fill="#FDBA74" />
               <circle cx="465" cy="114" r="24" fill="#FDBA74" />
 
-              {/* Rambut keriting gelap */}
+              
               <path
                 d="M441 112 C436 102, 441 88, 452 86 C458 76, 474 75, 482 84 C493 84, 500 94, 496 105 C491 103, 486 101, 482 96 C476 102, 464 103, 454 98 C450 104, 446 109, 441 112 Z"
                 fill="#1E293B"
               />
 
-              {/* Wajah */}
+           
               <circle cx="456" cy="114" r="2" fill="#1E293B" />
               <path
                 d="M450 116 L446 121 L451 122"
@@ -210,7 +210,7 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
 
-      {/* FOOTER */}
+    
       <footer className="bg-white border-t border-gray-200 mt-12 text-gray-600 text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

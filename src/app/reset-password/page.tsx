@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        {/* KOLOM KIRI: CARD FORM RESET PASSWORD */}
+       
         <div className="lg:col-span-5">
           <div className="bg-white rounded-xl border border-gray-100 shadow-2xs p-6 sm:p-8">
             <Link
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        {/* KOLOM KANAN: ILUSTRASI KUNCI & FORM RESET PASSWORD */}
+        
         <div className="lg:col-span-7 flex items-center justify-center">
           <svg
             viewBox="0 0 640 460"

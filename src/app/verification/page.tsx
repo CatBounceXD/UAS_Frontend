@@ -52,7 +52,7 @@ export default function EmailVerificationPage() {
   return (
     <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        {/* KOLOM KIRI: CARD EMAIL VERIFICATION */}
+
         <div className="lg:col-span-5">
           <div className="bg-white rounded-xl border border-gray-100 shadow-2xs p-6 sm:p-8">
             <Link
@@ -81,7 +81,7 @@ export default function EmailVerificationPage() {
             </div>
 
             <form className="space-y-6">
-              {/* 4 KOTAK INPUT KODE */}
+            
               <div className="flex items-center gap-3">
                 {code.map((digit, index) => {
                   const isFilled = digit !== "";
@@ -109,7 +109,7 @@ export default function EmailVerificationPage() {
                 })}
               </div>
 
-              {/* TIMER & RESEND CODE */}
+            
               <div className="flex items-center gap-2.5 text-xs">
                 <span className="text-[#64748B] font-medium tabular-nums">
                   {formattedTimer}
@@ -133,7 +133,7 @@ export default function EmailVerificationPage() {
           </div>
         </div>
 
-        {/* KOLOM KANAN: ILUSTRASI JAM & HOURGLASS */}
+        
         <div className="lg:col-span-7 flex items-center justify-center">
           <svg
             viewBox="0 0 640 460"
@@ -141,55 +141,55 @@ export default function EmailVerificationPage() {
             role="img"
             aria-label="Illustration of a person holding a clock next to a large hourglass"
           >
-            {/* Bayangan lantai */}
+            
             <ellipse cx="445" cy="378" rx="125" ry="9" fill="#F1F5F9" />
 
-            {/* Hourglass di sisi kanan */}
+           
             <rect x="442" y="218" width="118" height="12" rx="6" fill="#2394F0" />
             <rect x="442" y="362" width="118" height="12" rx="6" fill="#2394F0" />
 
-            {/* Kaca hourglass */}
+           
             <path
               d="M454 230 H548 C544 265, 514 286, 501 296 C514 306, 544 327, 548 362 H454 C458 327, 488 306, 501 296 C488 286, 458 265, 454 230 Z"
               fill="#DBEAFE"
             />
-            {/* Pasir atas */}
+            
             <path
               d="M472 254 H530 C522 272, 508 283, 501 290 C494 283, 480 272, 472 254 Z"
               fill="#60A5FA"
             />
-            {/* Butiran pasir jatuh */}
+           
             <circle cx="501" cy="304" r="2.2" fill="#2394F0" />
             <circle cx="501" cy="316" r="2.2" fill="#2394F0" />
             <circle cx="501" cy="328" r="2.2" fill="#2394F0" />
-            {/* Pasir bawah */}
+           
             <path
               d="M474 362 C482 350, 493 344, 501 344 C509 344, 520 350, 528 362 Z"
               fill="#2394F0"
             />
 
-            {/* Kaki & sepatu karakter */}
+        
             <path d="M416 254 L394 366 H374 L396 254 Z" fill="#2394F0" />
             <path d="M436 254 L444 366 H464 L452 254 Z" fill="#1D8FE1" />
 
-            {/* Manset celana & sepatu */}
+           
             <rect x="374" y="354" width="20" height="8" fill="#1E293B" />
             <rect x="444" y="354" width="20" height="8" fill="#1E293B" />
             <path d="M374 366 H394 L398 376 H364 C364 370, 368 366, 374 366 Z" fill="#1E293B" />
             <path d="M444 366 H464 L476 376 H442 Z" fill="#1E293B" />
 
-            {/* Celana biru */}
+           
             <path
               d="M394 228 H456 L458 264 H432 L426 248 L418 264 H392 Z"
               fill="#2394F0"
             />
 
-            {/* Sweater lengan panjang gelap */}
+          
             <path
               d="M396 154 C396 144, 408 138, 426 138 C442 138, 452 144, 452 154 L454 232 H394 Z"
               fill="#1E293B"
             />
-            {/* Aksen jahitan tipis di dada */}
+            
             <path
               d="M418 148 L424 155 L430 148"
               fill="none"
@@ -199,21 +199,21 @@ export default function EmailVerificationPage() {
               strokeLinejoin="round"
             />
 
-            {/* Lengan kanan mengangkat jam */}
+            
             <path
               d="M398 158 L368 192 L344 184 L348 172 L366 178 L388 150 Z"
               fill="#1E293B"
             />
             <circle cx="342" cy="176" r="7" fill="#FDBA74" />
 
-            {/* Lengan kiri ke arah hourglass */}
+         
             <path
               d="M448 158 L462 198 L442 204 L436 192 L448 188 L438 164 Z"
               fill="#1E293B"
             />
             <circle cx="440" cy="198" r="7" fill="#FDBA74" />
 
-            {/* Jam bulat di tangan kanan */}
+           
             <circle
               cx="396"
               cy="158"
@@ -241,17 +241,16 @@ export default function EmailVerificationPage() {
               strokeLinecap="round"
             />
 
-            {/* Leher & kepala karakter */}
+            
             <rect x="420" y="124" width="12" height="16" rx="4" fill="#FDBA74" />
             <circle cx="426" cy="106" r="19" fill="#FDBA74" />
 
-            {/* Rambut gelap */}
+            
             <path
               d="M408 102 C406 90, 414 80, 426 80 C434 74, 446 76, 450 86 C452 92, 448 98, 442 96 C436 94, 424 94, 414 100 Z"
               fill="#1E293B"
             />
 
-            {/* Wajah */}
             <circle cx="418" cy="107" r="1.7" fill="#1E293B" />
             <path
               d="M413 110 L410 115 L414 116"
