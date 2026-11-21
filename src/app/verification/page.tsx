@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+const otpSlotIds = ["otp-slot-1", "otp-slot-2", "otp-slot-3", "otp-slot-4"];
+
 export default function EmailVerificationPage() {
   const [code, setCode] = useState<string[]>(["5", "", "", ""]);
   const [secondsLeft, setSecondsLeft] = useState<number>(45);
@@ -83,9 +85,10 @@ export default function EmailVerificationPage() {
               <div className="flex items-center gap-3">
                 {code.map((digit, index) => {
                   const isFilled = digit !== "";
+                  const slotKey = otpSlotIds[index] ?? `otp-slot-${index + 1}`;
                   return (
                     <input
-                      key={index}
+                      key={slotKey}
                       ref={(el) => {
                         inputRefs.current[index] = el;
                       }}
