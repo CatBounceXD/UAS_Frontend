@@ -11,6 +11,18 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
+  },
+  user: {
+    additionalFields: {
+      phone: {
+        type: "string",
+        required: false,
+        defaultValue: null,
+        input: true,
+      },
+      dob: { type: "string", required: false, defaultValue: null, input: true },
+    },
   },
   plugins: [nextCookies()],
 });

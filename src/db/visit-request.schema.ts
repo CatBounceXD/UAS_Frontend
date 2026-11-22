@@ -1,3 +1,4 @@
+// src/db/visit-request.schema.ts
 import {
   boolean,
   integer,
@@ -6,11 +7,15 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth-schema";
 import { insurances } from "./insurance.schema";
 import { patients } from "./patient.schema";
 
 export const visitRequests = pgTable("visit_requests", {
   id: serial("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   patientId: integer("patient_id")
     .notNull()
     .references(() => patients.id, { onDelete: "cascade" }),

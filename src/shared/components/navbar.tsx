@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
 import { Button } from "@/shared/components/ui/button";
 import {
   NavigationMenu,
@@ -14,6 +13,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/shared/components/ui/navigation-menu";
+import { cn } from "@/shared/lib/utils";
 
 interface NavBarProps {
   variant?: "public" | "protected";
@@ -26,17 +26,16 @@ interface NavBarProps {
 
 const publicNavItems = [
   { label: "Beranda", href: "/" },
-  { label: "Edukasi", href: "/education" },
+  { label: "Edukasi", href: "/resource" },
   { label: "Kontak", href: "/contact" },
 ];
 
 const protectedNavItems = [
   { label: "Beranda", href: "/" },
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Kunjungan", href: "/visit" },
+  { label: "Kunjungan", href: "/visit-request" },
   { label: "Sumber Daya", href: "/resource" },
   { label: "Kontak", href: "/contact" },
-  { label: "Operasi", href: "/surgery" },
 ];
 
 export default function NavBar({ variant = "public", user }: NavBarProps) {
