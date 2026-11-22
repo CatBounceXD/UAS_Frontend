@@ -49,9 +49,7 @@ export default function SurgeryListClient({ userName }: { userName: string }) {
       .catch((err: unknown) => {
         if (mounted) {
           setError(
-            err instanceof Error
-              ? err.message
-              : "Gagal memuat daftar surgery.",
+            err instanceof Error ? err.message : "Gagal memuat daftar surgery.",
           );
         }
       })
