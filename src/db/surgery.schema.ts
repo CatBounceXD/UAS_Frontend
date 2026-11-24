@@ -1,49 +1,54 @@
 import {
-  boolean,
+  index,
   integer,
-  jsonb,
   pgTable,
   serial,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth-schema";
 import { doctors } from "./doctors.schema";
+import { insurances } from "./insurance.schema";
+import { patients } from "./patient.schema";
+import { visitRequests } from "./visit-request.schema";
 
-export const surgeries = pgTable("surgeries", {
-  id: serial("id").primaryKey(),
-  doctorId: integer("doctor_id").references(() => doctors.id, {
-    onDelete: "cascade",
-  }),
-  doctorName: text("doctor_name").notNull(),
-  doctorSpecialty: text("doctor_specialty").notNull(),
-  doctorAvatarUrl: text("doctor_avatar_url").notNull(),
-  specialtySummary: text("specialty_summary").notNull(),
-  procedures: jsonb("procedures").$type<string[]>().notNull().default([]),
-  status: text("status").notNull().default("Active"),
-  recommendationComment: text("recommendation_comment"),
-  suggestionNote: text("suggestion_note").notNull(),
-  patientName: text("patient_name").notNull(),
-  patientEmail: text("patient_email").notNull(),
-  patientDob: text("patient_dob").notNull(),
-  addressLine1: text("address_line_1").notNull(),
-  addressLine2: text("address_line_2"),
-  city: text("city").notNull(),
-  state: text("state").notNull(),
-  zipcode: text("zipcode").notNull(),
-  contactInfo: text("contact_info").notNull(),
-  referralSource: text("referral_source"),
-  preferredContactMethod: text("preferred_contact_method").notNull(),
-  ssn: text("ssn"),
-  isPolicyHolderSameAsPatient: boolean("is_policy_holder_same_as_patient")
-    .notNull()
-    .default(true),
-  policyHolderName: text("policy_holder_name").notNull(),
-  healthInsurancePlan: text("health_insurance_plan").notNull(),
-  healthInsuranceNumber: text("health_insurance_number").notNull(),
-  groupNumber: text("group_number"),
-  preferredAppointmentTime: text("preferred_appointment_time").notNull(),
-  urgency: text("urgency").notNull(),
-  reasonForVisit: text("reason_for_visit").notNull(),
-  cancelReason: text("cancel_reason"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const surgeries = pgTable(
+  "surgeries",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    visitRequestId: integer("visit_request_id").references(
+      () => visitRequests.id,
+      { onDelete: "set null" },
+    ),
+    patientId: integer("patient_id")
+      .notNull()
+      .references(() => patients.id, { onDelete: "cascade" }),
+    insuranceId: integer("insurance_id").references(() => insurances.id, {
+      onDelete: "set null",
+    }),
+    doctorId: integer("doctor_id")
+      .notNull()
+      .references(() => doctors.id, { onDelete: "restrict" }),
+    procedureSpecialty: text("procedure_specialty").notNull(),
+    status: text("status").notNull().default("Active"), // Active | Completed | Canceled
+    recommendationComment: text("recommendation_comment"),
+    suggestionNote: text("suggestion_note").notNull(),
+    preferredAppointmentTime: text("preferred_appointment_time").notNull(),
+    urgency: text("urgency").notNull(),
+    reasonForVisit: text("reason_for_visit").notNull(),
+    cancelReason: text("cancel_reason"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("surgeries_userId_idx").on(table.userId),
+    index("surgeries_doctorId_idx").on(table.doctorId),
+    index("surgeries_status_idx").on(table.status),
+  ],
+);

@@ -1,6 +1,7 @@
-import { asc } from "drizzle-orm";
 import { db } from "../index";
-import { doctors, surgeries } from "../schema";
+import { type doctors, insurances, patients, surgeries, user } from "../schema";
+
+type DoctorRow = typeof doctors.$inferSelect;
 
 const SURGEON_SPECIALTY_MAP: Record<string, string> = {
   "Heart Surgeon": "Heart Surgeon",
@@ -91,52 +92,67 @@ const SURGERY_CASES = [
   },
 ];
 
-export async function seedSurgeries() {
-  const existingDoctors = await db
-    .select()
-    .from(doctors)
-    .orderBy(asc(doctors.id))
-    .limit(SURGERY_CASES.length);
+export async function seedSurgeries(doctorList: DoctorRow[]) {
+  const existingUsers = await db.select().from(user).limit(1);
 
-  if (existingDoctors.length === 0) {
+  if (existingUsers.length === 0) {
     console.log(
-      "Belum ada data dokter di tabel doctors, lewati seeding surgeries.",
+      "Belum ada user terdaftar di tabel user, lewati seeding surgeries.",
     );
     return;
   }
 
-  console.log("Membersihkan data surgeries lama...");
-  await db.delete(surgeries);
+  if (doctorList.length === 0) {
+    console.log("Belum ada data dokter, lewati seeding surgeries.");
+    return;
+  }
 
-  const surgeryRows = existingDoctors.map((doc, index) => {
-    const template = SURGERY_CASES[index % SURGERY_CASES.length];
-    return {
-      doctorId: doc.id,
-      doctorName: doc.name,
-      doctorSpecialty: toSurgeonSpecialty(doc.specialty),
-      doctorAvatarUrl: doc.avatarUrl,
-      specialtySummary: doc.specialtySummary,
-      procedures: doc.procedures,
-      status: template.status,
-      recommendationComment: template.recommendationComment,
-      suggestionNote: template.suggestionNote,
-      patientName: "John Smith",
-      patientEmail: "john.smith@domain.com",
-      patientDob: "12-02-2001",
+  const targetUser = existingUsers[0];
+
+  const [samplePatient] = await db
+    .insert(patients)
+    .values({
+      userId: targetUser.id,
+      name: targetUser.name || "John Smith",
+      email: targetUser.email || "john.smith@domain.com",
+      dateOfBirth: targetUser.dob || "12-02-2001",
       addressLine1: "6033 Collins Inlet",
       addressLine2: "Suite 204",
       city: "West Gina",
       state: "New York",
       zipcode: "70945",
-      contactInfo: "278.268.6823 x36440",
-      referralSource: index % 2 === 0 ? "Internet" : "Doctor Referral",
       preferredContactMethod: "Home Phone",
+      contactInfo: targetUser.phone || "278.268.6823 x36440",
+      referralSource: "Doctor Referral",
       ssn: "0 123 456 7890",
+    })
+    .returning();
+
+  const [sampleInsurance] = await db
+    .insert(insurances)
+    .values({
+      patientId: samplePatient.id,
       isPolicyHolderSameAsPatient: true,
-      policyHolderName: "John Smith",
+      policyHolderName: targetUser.name || "John Smith",
       healthInsurancePlan: "BlueCross Comprehensive Care",
       healthInsuranceNumber: "0 123 456 789",
       groupNumber: "0 123 456 789",
+    })
+    .returning();
+
+  const selectedDoctors = doctorList.slice(0, SURGERY_CASES.length);
+
+  const surgeryRows = selectedDoctors.map((doc, index) => {
+    const template = SURGERY_CASES[index % SURGERY_CASES.length];
+    return {
+      userId: targetUser.id,
+      patientId: samplePatient.id,
+      insuranceId: sampleInsurance.id,
+      doctorId: doc.id,
+      procedureSpecialty: toSurgeonSpecialty(doc.specialty),
+      status: template.status,
+      recommendationComment: template.recommendationComment,
+      suggestionNote: template.suggestionNote,
       preferredAppointmentTime: template.preferredAppointmentTime,
       urgency: template.urgency,
       reasonForVisit: template.reasonForVisit,
@@ -144,7 +160,7 @@ export async function seedSurgeries() {
   });
 
   console.log(
-    `Memasukkan ${surgeryRows.length} data surgeries yang terhubung ke doctors...`,
+    `Memasukkan ${surgeryRows.length} data surgeries yang terhubung ke user & doctors...`,
   );
   await db.insert(surgeries).values(surgeryRows);
 }

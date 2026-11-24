@@ -1,5 +1,13 @@
 import { db } from "../index";
-import { doctors } from "../schema";
+import {
+  checkIn,
+  doctors,
+  insurances,
+  patients,
+  surgeries,
+  visitRequests,
+} from "../schema";
+import { seedResources } from "./resource.seed";
 import { seedSurgeries } from "./surgery.seed";
 import { seedVisitRequests } from "./visit-request.seed";
 
@@ -92,7 +100,7 @@ const SEED_DOCTORS = [
   {
     name: "Dr. Darlene Robertson",
     specialty: "Heart Surgeon",
-    bio: "Dr. Berastain Jr. was born in Zaragoza, Spain while his father was in medical school. He was raised...",
+    bio: "Dr. Darlene Robertson is a board-certified heart surgeon dedicated to delivering comprehensive cardiovascular care.",
     avatarUrl:
       "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
     rating: 5,
@@ -120,7 +128,7 @@ const SEED_DOCTORS = [
   {
     name: "DR. SCHLIMMER",
     specialty: "Cardiologists",
-    bio: "A native of Portland, Texas, Dr. Schlimmer is a board-certified, fellowship-trained orthopaedic surgeon...",
+    bio: "A native of Portland, Texas, Dr. Schlimmer is a board-certified, fellowship-trained cardiovascular specialist...",
     avatarUrl:
       "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80",
     rating: 4,
@@ -204,7 +212,7 @@ const SEED_DOCTORS = [
   {
     name: "DR. HALLQUIST",
     specialty: "Ophthalmologists",
-    bio: "Dr. April Hallquist is a board certified, fellowship-trained orthopaedic surgeon who was born and raised...",
+    bio: "Dr. April Hallquist is a board-certified, fellowship-trained ophthalmologist who was born and raised...",
     avatarUrl:
       "https://images.unsplash.com/photo-1594824813571-2153349aed06?w=150&auto=format&fit=crop&q=80",
     rating: 5,
@@ -342,11 +350,11 @@ const SEED_DOCTORS = [
     contactPhone: "+0 123 456 7890",
   },
   {
-    name: "Dr. Darlene Robertson",
+    name: "Dr. Elena Vance",
     specialty: "Endocrinologists",
-    bio: "Dr. Berastain Jr. was born in Zaragoza, Spain while his father was in medical school. He was raised...",
+    bio: "Dr. Elena Vance brings extensive clinical expertise in endocrinology and metabolic health management...",
     avatarUrl:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1594824813571-2153349aed06?w=150&auto=format&fit=crop&q=80",
     rating: 4,
     specialtySummary:
       "Specializes in endocrine system disorders, metabolic regulation, and preventive hormone care including:",
@@ -360,13 +368,13 @@ const SEED_DOCTORS = [
     training: DEFAULT_TRAINING,
     affiliations: DEFAULT_AFFILIATIONS,
     aboutParagraphs: [
-      "Dr. Darlene Robertson brings extensive clinical expertise in endocrinology and metabolic health management.",
+      "Dr. Elena Vance brings extensive clinical expertise in endocrinology and metabolic health management.",
       "She focuses on individualized care plans that help patients achieve balanced long-term health outcomes.",
-      "Dr. Darlene Robertson is currently accepting new patients.",
+      "Dr. Elena Vance is currently accepting new patients.",
     ],
     certificates: DEFAULT_CERTIFICATES,
     media: DEFAULT_MEDIA,
-    contactEmail: "darlene.endo@domain.com",
+    contactEmail: "elena.vance@domain.com",
     contactPhone: "+0 123 456 7890",
   },
 ];
@@ -375,14 +383,23 @@ async function seed() {
   console.log("Seeding database...");
 
   try {
-    console.log("Membersihkan data doctors lama...");
+    console.log("Membersihkan data transaksi & doctors lama...");
+    await db.delete(checkIn);
+    await db.delete(surgeries);
+    await db.delete(visitRequests);
+    await db.delete(insurances);
+    await db.delete(patients);
     await db.delete(doctors);
 
     console.log("Memasukkan data dokter ke Neon...");
-    await db.insert(doctors).values(SEED_DOCTORS);
+    const insertedDoctors = await db
+      .insert(doctors)
+      .values(SEED_DOCTORS)
+      .returning();
 
-    await seedSurgeries();
-    await seedVisitRequests();
+    await seedSurgeries(insertedDoctors);
+    await seedVisitRequests(insertedDoctors);
+    await seedResources();
 
     console.log("Seeding seluruh database berhasil!");
     process.exit(0);
