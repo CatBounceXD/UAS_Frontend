@@ -1,18 +1,15 @@
 "use client";
 
 import { AlertCircle, Loader2, X } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/shared/components/ui/button";
 
 export default function VisitRequestDetailActions({
   visitRequestId,
-  doctorId,
   status,
 }: {
   visitRequestId: number;
-  doctorId: number;
   status: string;
 }) {
   const router = useRouter();
@@ -67,15 +64,6 @@ export default function VisitRequestDetailActions({
   return (
     <>
       <div className="flex flex-wrap items-center justify-end gap-3 pt-1">
-        <Link href={`/dashboard/doctors/${doctorId}/appointment`}>
-          <Button
-            type="button"
-            className="rounded-lg bg-sky-500 px-6 py-2.5 text-xs font-semibold text-white hover:bg-sky-600"
-          >
-            Reschedule Appointment
-          </Button>
-        </Link>
-
         <Button
           type="button"
           onClick={() => {

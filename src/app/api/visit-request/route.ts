@@ -42,9 +42,24 @@ export async function POST(req: Request) {
       doctorId?: number;
     };
 
-    if (!body.name || !body.email || !body.reasonForVisit) {
+    if (
+      !body.name?.trim() ||
+      !body.email?.trim() ||
+      !body.dateOfBirth?.trim() ||
+      !body.addressLine1?.trim() ||
+      !body.city?.trim() ||
+      !body.state?.trim() ||
+      !body.zipcode?.trim() ||
+      !body.contactInfo?.trim() ||
+      !body.healthInsurancePlan?.trim() ||
+      !body.healthInsuranceNumber?.trim() ||
+      !body.reasonForVisit?.trim()
+    ) {
       return NextResponse.json(
-        { message: "Nama, email, dan alasan kunjungan wajib diisi." },
+        {
+          message:
+            "Harap lengkapi seluruh data pasien, asuransi, dan alasan kunjungan.",
+        },
         { status: 400 },
       );
     }

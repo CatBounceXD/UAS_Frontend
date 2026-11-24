@@ -30,31 +30,34 @@ const labelClassName = "mb-2 block text-sm font-medium text-[#163A5F]";
 
 export default function DoctorAppointmentClient({
   doctor,
+  defaultValues,
 }: {
   doctor: DoctorRecord;
+  defaultValues?: Partial<VisitRequestPayload>;
 }) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [formData, setFormData] = useState<VisitRequestPayload>({
     // Step 1: Patient Information
-    name: "",
-    email: "",
-    dateOfBirth: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    state: "",
-    zipcode: "",
-    preferredContactMethod: "",
-    contactInfo: "",
-    referralSource: "",
-    ssn: "",
+    name: defaultValues?.name ?? "",
+    email: defaultValues?.email ?? "",
+    dateOfBirth: defaultValues?.dateOfBirth ?? "",
+    addressLine1: defaultValues?.addressLine1 ?? "",
+    addressLine2: defaultValues?.addressLine2 ?? "",
+    city: defaultValues?.city ?? "",
+    state: defaultValues?.state ?? "",
+    zipcode: defaultValues?.zipcode ?? "",
+    preferredContactMethod: defaultValues?.preferredContactMethod ?? "",
+    contactInfo: defaultValues?.contactInfo ?? "",
+    referralSource: defaultValues?.referralSource ?? "",
+    ssn: defaultValues?.ssn ?? "",
 
     // Step 2: Insurance Information
-    isPolicyHolderSameAsPatient: true,
-    policyHolderName: "",
-    healthInsurancePlan: "",
-    healthInsuranceNumber: "",
-    groupNumber: "",
+    isPolicyHolderSameAsPatient:
+      defaultValues?.isPolicyHolderSameAsPatient ?? true,
+    policyHolderName: defaultValues?.policyHolderName ?? "",
+    healthInsurancePlan: defaultValues?.healthInsurancePlan ?? "",
+    healthInsuranceNumber: defaultValues?.healthInsuranceNumber ?? "",
+    groupNumber: defaultValues?.groupNumber ?? "",
 
     // Step 3: Appointment Information
     doctorName: doctor.name,
@@ -86,14 +89,60 @@ export default function DoctorAppointmentClient({
     }));
   };
 
+  const validateStep1 = (): string | null => {
+    if (!formData.name.trim()) return "Nama lengkap wajib diisi.";
+    if (!formData.email.trim()) return "Email wajib diisi.";
+    if (!formData.dateOfBirth.trim()) return "Tanggal lahir wajib diisi.";
+    if (!formData.addressLine1.trim()) return "Address Line 1 wajib diisi.";
+    if (!formData.city.trim()) return "City wajib diisi.";
+    if (!formData.state.trim()) return "State wajib diisi.";
+    if (!formData.zipcode.trim()) return "Zipcode wajib diisi.";
+    if (!formData.preferredContactMethod.trim())
+      return "Pilih metode kontak yang diinginkan.";
+    if (!formData.contactInfo.trim()) return "Contact Info wajib diisi.";
+    return null;
+  };
+
+  const validateStep2 = (): string | null => {
+    if (!formData.policyHolderName.trim())
+      return "Policy Holder Name wajib diisi.";
+    if (!formData.healthInsurancePlan.trim())
+      return "Health Insurance Plan wajib diisi.";
+    if (!formData.healthInsuranceNumber.trim())
+      return "Health Insurance Number wajib diisi.";
+    return null;
+  };
+
+  const validateStep3 = (): string | null => {
+    if (!formData.reasonForVisit.trim()) return "Reason for Visit wajib diisi.";
+    return null;
+  };
+
   const handleNextStep = () => {
     setErrorMessage(null);
-    if (currentStep === 1 && formData.isPolicyHolderSameAsPatient) {
-      setFormData((prev) => ({
-        ...prev,
-        policyHolderName: prev.policyHolderName || prev.name,
-      }));
+
+    if (currentStep === 1) {
+      const err = validateStep1();
+      if (err) {
+        setErrorMessage(err);
+        return;
+      }
+      if (formData.isPolicyHolderSameAsPatient) {
+        setFormData((prev) => ({
+          ...prev,
+          policyHolderName: prev.policyHolderName || prev.name,
+        }));
+      }
     }
+
+    if (currentStep === 2) {
+      const err = validateStep2();
+      if (err) {
+        setErrorMessage(err);
+        return;
+      }
+    }
+
     setCurrentStep((prev) => Math.min(prev + 1, 3));
   };
 
@@ -106,6 +155,12 @@ export default function DoctorAppointmentClient({
     e.preventDefault();
     if (currentStep < 3) {
       handleNextStep();
+      return;
+    }
+
+    const step3Err = validateStep3();
+    if (step3Err) {
+      setErrorMessage(step3Err);
       return;
     }
 
@@ -260,7 +315,7 @@ export default function DoctorAppointmentClient({
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-3">
               <div>
                 <label htmlFor="name" className={labelClassName}>
-                  Name
+                  Name *
                 </label>
                 <input
                   id="name"
@@ -274,7 +329,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="email" className={labelClassName}>
-                  Email
+                  Email *
                 </label>
                 <input
                   id="email"
@@ -288,12 +343,11 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="dateOfBirth" className={labelClassName}>
-                  Date of Birth
+                  Date of Birth *
                 </label>
                 <input
                   id="dateOfBirth"
-                  type="text"
-                  placeholder="ex. 12-02-2001"
+                  type="date"
                   value={formData.dateOfBirth}
                   onChange={(e) => updateField("dateOfBirth", e.target.value)}
                   className={inputClassName}
@@ -302,7 +356,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="addressLine1" className={labelClassName}>
-                  Address Line 1
+                  Address Line 1 *
                 </label>
                 <input
                   id="addressLine1"
@@ -321,7 +375,7 @@ export default function DoctorAppointmentClient({
                 <input
                   id="addressLine2"
                   type="text"
-                  placeholder="ex. 6033 Collins Inlet"
+                  placeholder="ex. Apt 4B"
                   value={formData.addressLine2}
                   onChange={(e) => updateField("addressLine2", e.target.value)}
                   className={inputClassName}
@@ -330,7 +384,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="city" className={labelClassName}>
-                  City
+                  City *
                 </label>
                 <input
                   id="city"
@@ -344,7 +398,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="state" className={labelClassName}>
-                  State
+                  State *
                 </label>
                 <input
                   id="state"
@@ -358,7 +412,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="zipcode" className={labelClassName}>
-                  Zipcode
+                  Zipcode *
                 </label>
                 <input
                   id="zipcode"
@@ -375,7 +429,7 @@ export default function DoctorAppointmentClient({
                   htmlFor="preferredContactMethod"
                   className={labelClassName}
                 >
-                  How may we contact you:
+                  How may we contact you: *
                 </label>
                 <div className="relative">
                   <select
@@ -401,12 +455,12 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="contactInfo" className={labelClassName}>
-                  Contact Info
+                  Contact Info *
                 </label>
                 <input
                   id="contactInfo"
                   type="text"
-                  placeholder="ex. 278.268.6823 x36440"
+                  placeholder="ex. 081234567890"
                   value={formData.contactInfo}
                   onChange={(e) => updateField("contactInfo", e.target.value)}
                   className={inputClassName}
@@ -492,7 +546,7 @@ export default function DoctorAppointmentClient({
               <div className="grid grid-cols-1 gap-x-8 gap-y-5 md:grid-cols-2">
                 <div>
                   <label htmlFor="policyHolderName" className={labelClassName}>
-                    Policy Holder Name
+                    Policy Holder Name *
                   </label>
                   <input
                     id="policyHolderName"
@@ -511,7 +565,7 @@ export default function DoctorAppointmentClient({
                     htmlFor="healthInsurancePlan"
                     className={labelClassName}
                   >
-                    Health Insurance Plan
+                    Health Insurance Plan *
                   </label>
                   <input
                     id="healthInsurancePlan"
@@ -530,7 +584,7 @@ export default function DoctorAppointmentClient({
                     htmlFor="healthInsuranceNumber"
                     className={labelClassName}
                   >
-                    Health Insurance Number
+                    Health Insurance Number *
                   </label>
                   <input
                     id="healthInsuranceNumber"
@@ -632,7 +686,7 @@ export default function DoctorAppointmentClient({
 
               <div>
                 <label htmlFor="reasonForVisit" className={labelClassName}>
-                  Reason for Visit
+                  Reason for Visit *
                 </label>
                 <textarea
                   id="reasonForVisit"

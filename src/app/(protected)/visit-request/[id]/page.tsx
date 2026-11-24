@@ -47,7 +47,6 @@ export default async function VisitRequestDetailPage({
 
       <VisitRequestDetailActions
         visitRequestId={detail.id}
-        doctorId={detail.doctorId}
         status={detail.status}
       />
     </div>

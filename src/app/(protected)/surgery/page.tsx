@@ -1,15 +1,18 @@
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import SurgeryListClient from "@/features/surgery/components/SurgeryListClient";
-import { getAllSurgeries } from "@/features/surgery/queries";
+import { getAllSurgeriesByUserId } from "@/features/surgery/queries";
 import { auth } from "@/lib/auth";
 
 export default async function SurgeryPage() {
-  const [session, surgeries] = await Promise.all([
-    auth.api.getSession({ headers: await headers() }),
-    getAllSurgeries(),
-  ]);
+  const session = await auth.api.getSession({ headers: await headers() });
 
-  const userName = session?.user?.name || "John";
+  if (!session) {
+    redirect("/login");
+  }
+
+  const surgeries = await getAllSurgeriesByUserId(session.user.id);
+  const userName = session.user.name || "Patient";
 
   return (
     <div className="space-y-8 text-slate-800">

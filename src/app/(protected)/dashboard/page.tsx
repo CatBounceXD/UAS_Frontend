@@ -1,3 +1,4 @@
+import { History } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import DoctorCard from "@/features/doctors/components/DoctorCard";
@@ -22,9 +23,21 @@ export default async function DashboardPage() {
             Welcome Back {userName}
           </h1>
         </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
         <Link href="/checkin">
           <Button className="rounded-full bg-sky-500 px-6 py-2.5 font-medium text-white shadow-sm hover:bg-sky-600">
             Check - In
+          </Button>
+        </Link>
+
+        <Link href="/checkin/history">
+          <Button
+            variant="outline"
+            className="rounded-full border-slate-200 bg-white px-6 py-2.5 font-medium text-slate-700 shadow-sm hover:border-sky-300 hover:bg-sky-50/50 hover:text-sky-600"
+          >
+            <History className="mr-2 h-4 w-4" />
+            Check-In History
           </Button>
         </Link>
       </div>
