@@ -1,4 +1,3 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllDoctors } from "@/features/doctors/queries";
@@ -29,22 +28,6 @@ export default async function Main() {
                 Comprehensive orthopedic and specialist medical care tailored to
                 restore your mobility, comfort, and active lifestyle.
               </p>
-              <div className="flex gap-3">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full border-0 bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white/30"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full border-0 bg-white/10 text-white backdrop-blur-sm transition-all hover:bg-white/30"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
             </div>
           </section>
 
@@ -83,10 +66,7 @@ export default async function Main() {
                     <p className="mt-2 mb-4 line-clamp-3 text-xs text-gray-500">
                       {doc.bio}
                     </p>
-                    <Link
-                      href={`/doctors/${doc.id}`}
-                      className="mt-auto block"
-                    >
+                    <Link href={`/doctors/${doc.id}`} className="mt-auto block">
                       <Button
                         size="sm"
                         className="w-full bg-blue-500 text-xs hover:bg-blue-600"
