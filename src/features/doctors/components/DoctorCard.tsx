@@ -46,7 +46,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
 
         <div className="mt-4 border-t border-slate-100 pt-3 text-center">
           <Link
-            href={`/dashboard/doctors/${doctor.id}`}
+            href={`/doctors/${doctor.id}`}
             className="text-xs font-semibold text-sky-500 hover:text-sky-600"
           >
             View More

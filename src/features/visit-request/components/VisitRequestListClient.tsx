@@ -151,7 +151,7 @@ export default function VisitRequestListClient({
               : `You don't have any ${activeTab.toLowerCase()} appointments yet.`}
           </p>
           {activeTab === "Active" && (
-            <Link href="/dashboard/doctors" className="mt-5 inline-block">
+            <Link href="/doctors" className="mt-5 inline-block">
               <Button className="rounded-xl bg-[#1D9BF0] px-6 text-white hover:bg-[#1989d6]">
                 Find a Doctor
               </Button>

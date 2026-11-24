@@ -50,7 +50,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="/dashboard"
+                href="/doctors"
                 className="hover:text-primary transition-colors"
               >
                 Daftar Dokter

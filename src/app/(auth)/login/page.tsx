@@ -36,7 +36,11 @@ export default function CardDemo() {
       return;
     }
 
-    router.push("/");
+    const params = new URLSearchParams(window.location.search);
+    const callbackUrl = params.get("callbackUrl");
+    const destination = callbackUrl?.startsWith("/") ? callbackUrl : "/";
+
+    router.push(destination);
     router.refresh();
   };
 
