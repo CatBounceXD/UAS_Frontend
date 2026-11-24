@@ -292,7 +292,7 @@ export default function DoctorAppointmentClient({
           <div className="mb-7 border-b border-slate-100 pb-4">
             {currentStep === 1 ? (
               <Link
-                href={`/dashboard/doctors/${doctor.id}`}
+                href={`/doctors/${doctor.id}`}
                 className="inline-flex items-center gap-1.5 text-xl font-bold text-[#163A5F] transition hover:text-[#1D9BF0]"
               >
                 <ChevronLeft className="h-5 w-5 stroke-[2.5]" />

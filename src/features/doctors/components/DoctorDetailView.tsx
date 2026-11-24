@@ -9,7 +9,17 @@ import {
 
 type DoctorRecord = typeof doctors.$inferSelect;
 
-export default function DoctorDetailView({ doctor }: { doctor: DoctorRecord }) {
+export default function DoctorDetailView({
+  doctor,
+  isAuthenticated = false,
+}: {
+  doctor: DoctorRecord;
+  isAuthenticated?: boolean;
+}) {
+  const appointmentHref = isAuthenticated
+    ? `/dashboard/doctors/${doctor.id}/appointment`
+    : `/login?callbackUrl=${encodeURIComponent(`/dashboard/doctors/${doctor.id}/appointment`)}`;
+
   return (
     <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-10">
       <div className="flex flex-col justify-between gap-6 border-b border-slate-100 pb-6 sm:flex-row sm:items-center">
@@ -44,10 +54,12 @@ export default function DoctorDetailView({ doctor }: { doctor: DoctorRecord }) {
         </div>
 
         <Link
-          href={`/dashboard/doctors/${doctor.id}/appointment`}
+          href={appointmentHref}
           className="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#1D9BF0] px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#1989d6]"
         >
-          Request Appointment
+          {isAuthenticated
+            ? "Request Appointment"
+            : "Login to Request Appointment"}
         </Link>
       </div>
 
@@ -63,7 +75,7 @@ export default function DoctorDetailView({ doctor }: { doctor: DoctorRecord }) {
 
         <div>
           <h2 className="mb-2 text-base font-bold text-[#163A5F]">
-            Specialty & Procedures
+            Specialty &amp; Procedures
           </h2>
           <p className="mb-3 leading-relaxed">{doctor.specialtySummary}</p>
           <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">

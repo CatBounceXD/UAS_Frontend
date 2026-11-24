@@ -54,7 +54,7 @@ export default async function Main() {
                 Meet Our <span className="text-primary">Doctor</span>
               </h2>
               <Link
-                href="/dashboard/doctors"
+                href="/doctors"
                 className="text-sm font-medium text-blue-600 hover:underline"
               >
                 View All Doctors
@@ -84,7 +84,7 @@ export default async function Main() {
                       {doc.bio}
                     </p>
                     <Link
-                      href={`/dashboard/doctors/${doc.id}`}
+                      href={`/doctors/${doc.id}`}
                       className="mt-auto block"
                     >
                       <Button
