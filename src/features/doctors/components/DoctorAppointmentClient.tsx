@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
 import type { DoctorRecord } from "@/features/doctors/queries";
-import type { VisitRequestPayload } from "@/lib/api";
+import type { VisitRequestPayload } from "@/features/visit-request/types";
 import {
   Avatar,
   AvatarFallback,

@@ -64,45 +64,6 @@ export const api = {
     apiFetch<T>(endpoint, { ...options, method: "DELETE" }),
 };
 
-export interface VisitRequestPayload {
-  // Step 1: Patient Information
-  name: string;
-  email: string;
-  dateOfBirth: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  zipcode: string;
-  preferredContactMethod: string;
-  contactInfo: string;
-  referralSource: string;
-  ssn: string;
-
-  // Step 2: Insurance Information
-  isPolicyHolderSameAsPatient: boolean;
-  policyHolderName: string;
-  healthInsurancePlan: string;
-  healthInsuranceNumber: string;
-  groupNumber: string;
-
-  // Step 3: Appointment Information
-  doctorName: string;
-  doctorSpecialty: string;
-  preferredAppointmentTime: string;
-  urgency: string;
-  reasonForVisit: string;
-}
-
-export const visitRequestApi = {
-  getAll: () => api.get<VisitRequestPayload[]>("/visit-requests"),
-  create: (payload: VisitRequestPayload) =>
-    api.post<{ message: string; data: VisitRequestPayload }>(
-      "/visit-requests",
-      payload,
-    ),
-};
-
 export interface DoctorDetail {
   id: number;
   name: string;

@@ -2,7 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { doctors, insurances, patients, visitRequests } from "@/db/schema";
-import type { VisitRequestPayload } from "@/lib/api";
+import type { VisitRequestPayload } from "./types";
 
 const referredDoctor = alias(doctors, "referred_doctor");
 

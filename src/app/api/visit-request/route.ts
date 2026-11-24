@@ -4,7 +4,7 @@ import {
   createVisitRequest,
   getVisitRequestsByUserId,
 } from "@/features/visit-request/queries";
-import type { VisitRequestPayload } from "@/lib/api";
+import type { VisitRequestPayload } from "@/features/visit-request/types";
 import { auth } from "@/lib/auth";
 
 export async function GET() {
