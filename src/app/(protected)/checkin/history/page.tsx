@@ -40,7 +40,8 @@ export default async function CheckInHistoryPage() {
             Check-In History
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            View your past check-in tickets, room assignments, and submitted reviews.
+            View your past check-in tickets, room assignments, and submitted
+            reviews.
           </p>
         </div>
 
@@ -63,7 +64,8 @@ export default async function CheckInHistoryPage() {
             No Check-In History Yet
           </h2>
           <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">
-            You haven&apos;t completed any patient check-in. Start a new check-in to get your queue number.
+            You haven&apos;t completed any patient check-in. Start a new
+            check-in to get your queue number.
           </p>
           <Link
             href="/checkin/step-1"
@@ -95,13 +97,16 @@ export default async function CheckInHistoryPage() {
                       <p className="flex items-center gap-1.5 text-xs text-slate-400">
                         <CalendarDays className="h-3.5 w-3.5" />
                         <span>
-                          {new Date(item.createdAt).toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {new Date(item.createdAt).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
                         </span>
                       </p>
                     </div>
