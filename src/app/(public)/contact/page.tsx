@@ -1,5 +1,4 @@
 import { MapPin, Phone, Printer } from "lucide-react";
-import Link from "next/link";
 
 export default function ContactUsPage() {
   return (
@@ -19,7 +18,7 @@ export default function ContactUsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sm:p-10 space-y-8">
           {/* MAP ILLUSTRATION BOX */}
           <div className="w-full h-80 sm:h-96 bg-blue-50 rounded-lg overflow-hidden border border-gray-200 relative flex items-center justify-center">
-            <div className="absolute inset-0 opacity-80 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] bg-blue-100"></div>
+            <div className="absolute inset-0 opacity-80 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-size-[16px_16px] bg-blue-100"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex flex-col items-center">
                 <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-white shadow-lg animate-bounce flex items-center justify-center">
@@ -38,15 +37,15 @@ export default function ContactUsPage() {
               Location & Contact Information
             </h2>
             <div className="flex items-center space-x-3">
-              <Phone className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <Phone className="w-4 h-4 text-blue-500 shrink-0" />
               <span>+ 0 123 456 7890</span>
             </div>
             <div className="flex items-center space-x-3">
-              <Printer className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <Printer className="w-4 h-4 text-blue-500 shrink-0" />
               <span>(361) 561-1355</span>
             </div>
             <div className="flex items-start space-x-3">
-              <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-1" />
+              <MapPin className="w-4 h-4 text-blue-500 shrink-0 mt-1" />
               <span>6118 Parkway Drive, Corpus Christi, Texas 78414</span>
             </div>
           </div>
@@ -61,97 +60,6 @@ export default function ContactUsPage() {
           </div>
         </div>
       </div>
-
-      {/* FOOTER */}
-      <footer className="bg-white border-t border-gray-200 mt-12 text-gray-600 text-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <p className="text-xs text-gray-700 font-medium leading-relaxed">
-                &ldquo;We are here to provide you the best care for your health
-                problems!&rdquo;
-              </p>
-              <div className="space-y-1 pt-2">
-                <p className="font-bold text-gray-900 text-sm">Contact Us</p>
-                <p className="flex items-center gap-2 text-xs text-gray-600">
-                  <Printer className="w-3.5 h-3.5 text-blue-500" /> 081234567890
-                </p>
-                <p className="flex items-center gap-2 text-xs text-gray-600">
-                  <Phone className="w-3.5 h-3.5 text-blue-500" /> 081234567890
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-gray-900 mb-4">Quick Links</p>
-              <ul className="space-y-2 text-xs">
-                <li>
-                  <Link href="/" className="hover:text-blue-600">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-blue-600">
-                    Our Team
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/patient" className="hover:text-blue-600">
-                    Patients
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-blue-600">
-                    Education
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-blue-600">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="font-bold text-gray-900 mb-4">Follow Us</p>
-              <div className="flex space-x-3">
-                <Link
-                  href="#"
-                  className="w-8 h-8 bg-blue-600 text-white rounded flex items-center justify-center hover:opacity-90 font-bold text-xs"
-                >
-                  f
-                </Link>
-                <Link
-                  href="#"
-                  className="w-8 h-8 bg-pink-600 text-white rounded flex items-center justify-center hover:opacity-90 font-bold text-xs"
-                >
-                  ig
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <p className="font-bold text-gray-900 mb-4">Locations</p>
-              <div className="flex items-start space-x-2 text-xs">
-                <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                <p className="text-gray-600 leading-relaxed">
-                  6118 Parkway Drive, Corpus Christi, Texas 78414
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 mt-10 pt-6 text-xs text-gray-500 leading-relaxed">
-            <p>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsa
-              exercitationem veritatis velit, repellendus at fuga nobis quasi
-              officiis atque dolor rerum distinctio beatae error vel est
-              reiciendis ex nulla accusantium.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

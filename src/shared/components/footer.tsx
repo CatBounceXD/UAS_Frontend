@@ -146,11 +146,11 @@ export default function Footer() {
             dilindungi.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/contact#terms" className="hover:text-primary">
+            <Link href="/terms-and-condition" className="hover:text-primary">
               Syarat &amp; Ketentuan
             </Link>
             <span>|</span>
-            <Link href="/contact#privacy" className="hover:text-primary">
+            <Link href="/privacy-policy" className="hover:text-primary">
               Kebijakan Privasi
             </Link>
           </div>
