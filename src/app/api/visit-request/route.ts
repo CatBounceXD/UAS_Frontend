@@ -38,9 +38,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = (await req.json()) as VisitRequestPayload & {
-      doctorId?: number;
-    };
+    const body = (await req.json()) as VisitRequestPayload;
 
     if (
       !body.name?.trim() ||
@@ -75,6 +73,15 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error("POST /api/visit-request error:", error);
+
+    if (
+      error instanceof Error &&
+      error.message ===
+        "Dokter yang dipilih tidak ditemukan atau tidak tersedia."
+    ) {
+      return NextResponse.json({ message: error.message }, { status: 400 });
+    }
+
     return NextResponse.json(
       { message: "Gagal menyimpan permintaan appointment." },
       { status: 500 },

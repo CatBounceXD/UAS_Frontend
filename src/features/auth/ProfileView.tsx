@@ -4,9 +4,8 @@ import { ChevronLeft, Eye, EyeOff, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { updateProfileAction } from "@/features/auth/actions";
-import type { ProfileSidebarUser } from "@/features/auth/ProfileSidebar";
 import { authClient } from "@/lib/auth-client";
 import {
   Avatar,
@@ -17,16 +16,31 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 
+export interface ProfileUser {
+  id?: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  phone?: string | null;
+  dob?: string | null;
+}
+
 interface ProfileViewProps {
-  user: ProfileSidebarUser;
+  user: ProfileUser;
 }
 
 export function ProfileView({ user }: ProfileViewProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(user.name);
   const [phone, setPhone] = useState(user.phone ?? "");
   const [dob, setDob] = useState(user.dob ?? "");
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    user.image ?? null,
+  );
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -42,6 +56,16 @@ export function ProfileView({ user }: ProfileViewProps) {
     text: string;
   } | null>(null);
 
+  const { refetch } = authClient.useSession();
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const initials = (user.name || "U")
     .split(" ")
     .filter(Boolean)
@@ -50,13 +74,64 @@ export function ProfileView({ user }: ProfileViewProps) {
     .join("")
     .toUpperCase();
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setNotice({
+        kind: "err",
+        text: "Format must be JPG, PNG, or WebP.",
+      });
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setNotice({ kind: "err", text: "Image max 2MB." });
+      return;
+    }
+
+    setNotice(null);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setNotice(null);
     setSaving(true);
 
     try {
-      const res = await updateProfileAction({ name, phone, dob });
+      let uploadedImageUrl: string | undefined;
+
+      if (selectedFile) {
+        const uploadData = new FormData();
+        uploadData.append("file", selectedFile);
+
+        const uploadRes = await fetch("/api/profile/avatar", {
+          method: "POST",
+          body: uploadData,
+        });
+        const uploadJson = await uploadRes.json();
+
+        if (!uploadRes.ok) {
+          setNotice({
+            kind: "err",
+            text: uploadJson.error || "Failed to Upload Profile Picture.",
+          });
+          return;
+        }
+
+        uploadedImageUrl = uploadJson.url;
+      }
+
+      const res = await updateProfileAction({
+        name,
+        phone,
+        dob,
+        ...(uploadedImageUrl !== undefined ? { image: uploadedImageUrl } : {}),
+      });
+
       if (!res.ok) {
         setNotice({ kind: "err", text: res.message });
         return;
@@ -97,6 +172,8 @@ export function ProfileView({ user }: ProfileViewProps) {
         setRePassword("");
       }
 
+      setSelectedFile(null);
+      await refetch();
       router.refresh();
       setNotice({ kind: "ok", text: res.message });
     } finally {
@@ -123,14 +200,23 @@ export function ProfileView({ user }: ProfileViewProps) {
           <div className="px-6 pb-6">
             <div className="-mt-11 mb-4 flex items-end justify-between">
               <Avatar className="h-22 w-22 border-4 border-white shadow">
-                <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                <AvatarImage
+                  src={previewUrl ?? undefined}
+                  alt={user.name}
+                  className="object-cover"
+                />
                 <AvatarFallback className="bg-sky-100 text-lg font-semibold text-sky-700">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Ubah foto profil"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-600 hover:bg-sky-100"
+              >
                 <Pencil className="h-3.5 w-3.5" />
-              </span>
+              </button>
             </div>
 
             <h2 className="text-lg font-semibold text-slate-900">
@@ -161,16 +247,40 @@ export function ProfileView({ user }: ProfileViewProps) {
         {/* Form Edit Profile & Change Password di Kanan */}
         <form onSubmit={handleSubmit} className="space-y-6 lg:col-span-8">
           <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs">
-            <div className="relative mb-6 inline-block">
-              <Avatar className="h-20 w-20 border-2 border-slate-100">
-                <AvatarImage src={user.image ?? undefined} alt={name} />
-                <AvatarFallback className="bg-sky-100 text-lg font-semibold text-sky-700">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <span className="absolute right-0 bottom-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-500 text-white shadow">
-                <Pencil className="h-3 w-3" />
-              </span>
+            <div className="mb-6 flex items-center gap-4">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="group relative inline-block rounded-full focus:outline-none"
+                title="Klik untuk mengganti foto profil"
+              >
+                <Avatar className="h-20 w-20 border-2 border-slate-100 transition group-hover:opacity-90">
+                  <AvatarImage
+                    src={previewUrl ?? undefined}
+                    alt={name}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-sky-100 text-lg font-semibold text-sky-700">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="absolute right-0 bottom-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-500 text-white shadow transition group-hover:bg-sky-600">
+                  <Pencil className="h-3 w-3" />
+                </span>
+              </button>
+
+              <div className="text-xs text-slate-500">
+                <p className="font-medium text-2xl text-slate-700">{name}</p>
+                <p>Profie Photo (JPG, PNG, WebP, max. 2MB).</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

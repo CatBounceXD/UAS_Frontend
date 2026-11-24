@@ -6,6 +6,10 @@ import type { VisitRequestPayload } from "./types";
 
 const referredDoctor = alias(doctors, "referred_doctor");
 
+type VisitRequestStatus = NonNullable<
+  (typeof visitRequests.$inferInsert)["status"]
+>;
+
 export async function getVisitRequestsByUserId(userId: string) {
   const rows = await db
     .select({
@@ -45,73 +49,134 @@ export async function getVisitRequestsByUserId(userId: string) {
 
 export async function createVisitRequest(
   userId: string,
-  body: VisitRequestPayload & { doctorId?: number },
+  payload: VisitRequestPayload,
 ) {
-  const allDoctors = await db.select().from(doctors);
-  const matchedDoctor =
-    allDoctors.find((d) => d.id === body.doctorId) ??
-    allDoctors.find(
-      (d) => d.name.toLowerCase() === body.doctorName?.toLowerCase(),
-    ) ??
-    allDoctors[0];
+  return await db.transaction(async (tx) => {
+    const [selectedDoctor] = payload.doctorId
+      ? await tx
+          .select()
+          .from(doctors)
+          .where(eq(doctors.id, payload.doctorId))
+          .limit(1)
+      : payload.doctorName?.trim()
+        ? await tx
+            .select()
+            .from(doctors)
+            .where(eq(doctors.name, payload.doctorName.trim()))
+            .limit(1)
+        : [];
 
-  if (!matchedDoctor) {
-    throw new Error("Data dokter tidak ditemukan di database.");
-  }
+    if (!selectedDoctor) {
+      throw new Error(
+        "Dokter yang dipilih tidak ditemukan atau tidak tersedia.",
+      );
+    }
 
-  const [createdPatient] = await db
-    .insert(patients)
-    .values({
+    const [existingPatient] = await tx
+      .select({ id: patients.id })
+      .from(patients)
+      .where(eq(patients.userId, userId))
+      .limit(1);
+
+    const patientValues = {
       userId,
-      name: body.name,
-      email: body.email,
-      dateOfBirth: body.dateOfBirth || "-",
-      addressLine1: body.addressLine1 || "-",
-      addressLine2: body.addressLine2 || "",
-      city: body.city || "-",
-      state: body.state || "-",
-      zipcode: body.zipcode || "-",
-      preferredContactMethod: body.preferredContactMethod || "Phone",
-      contactInfo: body.contactInfo || "-",
-      referralSource: body.referralSource || "",
-      ssn: body.ssn || "",
-    })
-    .returning();
+      name: payload.name.trim(),
+      email: payload.email.trim(),
+      dateOfBirth: payload.dateOfBirth.trim(),
+      addressLine1: payload.addressLine1.trim(),
+      addressLine2: payload.addressLine2?.trim() || null,
+      city: payload.city.trim(),
+      state: payload.state.trim(),
+      zipcode: payload.zipcode.trim(),
+      preferredContactMethod: payload.preferredContactMethod.trim(),
+      contactInfo: payload.contactInfo.trim(),
+      referralSource: payload.referralSource?.trim() || null,
+      ssn: payload.ssn?.trim() || null,
+    };
 
-  let insuranceId: number | null = null;
-  if (body.healthInsurancePlan?.trim() || body.healthInsuranceNumber?.trim()) {
-    const [createdInsurance] = await db
-      .insert(insurances)
+    let patientId: number;
+
+    if (existingPatient) {
+      const [updatedPatient] = await tx
+        .update(patients)
+        .set(patientValues)
+        .where(eq(patients.id, existingPatient.id))
+        .returning({ id: patients.id });
+
+      patientId = updatedPatient.id;
+    } else {
+      const [insertedPatient] = await tx
+        .insert(patients)
+        .values(patientValues)
+        .returning({ id: patients.id });
+
+      patientId = insertedPatient.id;
+    }
+
+    const [existingInsurance] = await tx
+      .select({ id: insurances.id })
+      .from(insurances)
+      .where(
+        and(
+          eq(insurances.patientId, patientId),
+          eq(
+            insurances.healthInsurancePlan,
+            payload.healthInsurancePlan.trim(),
+          ),
+          eq(
+            insurances.healthInsuranceNumber,
+            payload.healthInsuranceNumber.trim(),
+          ),
+        ),
+      )
+      .limit(1);
+
+    let insuranceId: number;
+
+    if (existingInsurance) {
+      const [updatedInsurance] = await tx
+        .update(insurances)
+        .set({
+          isPolicyHolderSameAsPatient: payload.isPolicyHolderSameAsPatient,
+          policyHolderName: payload.policyHolderName.trim(),
+          groupNumber: payload.groupNumber?.trim() || "",
+        })
+        .where(eq(insurances.id, existingInsurance.id))
+        .returning({ id: insurances.id });
+
+      insuranceId = updatedInsurance.id;
+    } else {
+      const [insertedInsurance] = await tx
+        .insert(insurances)
+        .values({
+          patientId,
+          isPolicyHolderSameAsPatient: payload.isPolicyHolderSameAsPatient,
+          policyHolderName: payload.policyHolderName.trim(),
+          healthInsurancePlan: payload.healthInsurancePlan.trim(),
+          healthInsuranceNumber: payload.healthInsuranceNumber.trim(),
+          groupNumber: payload.groupNumber?.trim() || "",
+        })
+        .returning({ id: insurances.id });
+
+      insuranceId = insertedInsurance.id;
+    }
+
+    const [createdRequest] = await tx
+      .insert(visitRequests)
       .values({
-        patientId: createdPatient.id,
-        isPolicyHolderSameAsPatient: body.isPolicyHolderSameAsPatient ?? true,
-        policyHolderName: body.policyHolderName || body.name,
-        healthInsurancePlan: body.healthInsurancePlan || "-",
-        healthInsuranceNumber: body.healthInsuranceNumber || "-",
-        groupNumber: body.groupNumber || "",
+        userId,
+        patientId,
+        insuranceId,
+        doctorId: selectedDoctor.id,
+        preferredAppointmentTime: payload.preferredAppointmentTime.trim(),
+        urgency: payload.urgency.trim(),
+        reasonForVisit: payload.reasonForVisit.trim(),
+        status: "Pending",
       })
       .returning();
 
-    insuranceId = createdInsurance.id;
-  }
-
-  const [createdVisitRequest] = await db
-    .insert(visitRequests)
-    .values({
-      userId,
-      patientId: createdPatient.id,
-      insuranceId,
-      doctorId: matchedDoctor.id,
-      preferredAppointmentTime: body.preferredAppointmentTime || "Morning",
-      urgency: body.urgency || "Routine",
-      reasonForVisit: body.reasonForVisit,
-      recommendationComment:
-        "Initial visit request received. Our clinical team will review your symptoms and medical history prior to your consultation.",
-      status: "Active",
-    })
-    .returning();
-
-  return createdVisitRequest;
+    return createdRequest;
+  });
 }
 
 export async function getVisitRequestDetailById(id: number, userId: string) {
@@ -156,34 +221,43 @@ export async function updateVisitRequestById(
   id: number,
   userId: string,
   payload: {
-    status?: string;
-    cancelReason?: string;
+    status?: VisitRequestStatus;
     rating?: number;
     reviewComment?: string;
+    preferredAppointmentTime?: string;
+    urgency?: string;
+    reasonForVisit?: string;
   },
 ) {
-  const updatePayload: Partial<typeof visitRequests.$inferInsert> = {
-    updatedAt: new Date(),
-  };
-
-  if (payload.status) {
-    updatePayload.status = payload.status;
-    if (payload.status === "Canceled") {
-      updatePayload.cancelReason = payload.cancelReason ?? null;
+  if (payload.rating !== undefined) {
+    if (
+      typeof payload.rating !== "number" ||
+      !Number.isInteger(payload.rating) ||
+      payload.rating < 1 ||
+      payload.rating > 5
+    ) {
+      throw new Error("Rating harus berupa bilangan bulat antara 1 hingga 5.");
     }
-  }
-
-  if (typeof payload.rating === "number") {
-    updatePayload.rating = payload.rating;
-  }
-
-  if (typeof payload.reviewComment === "string") {
-    updatePayload.reviewComment = payload.reviewComment;
   }
 
   const [updated] = await db
     .update(visitRequests)
-    .set(updatePayload)
+    .set({
+      ...(payload.status !== undefined ? { status: payload.status } : {}),
+      ...(payload.rating !== undefined ? { rating: payload.rating } : {}),
+      ...(payload.reviewComment !== undefined
+        ? { reviewComment: payload.reviewComment.trim() }
+        : {}),
+      ...(payload.preferredAppointmentTime !== undefined
+        ? { preferredAppointmentTime: payload.preferredAppointmentTime.trim() }
+        : {}),
+      ...(payload.urgency !== undefined
+        ? { urgency: payload.urgency.trim() }
+        : {}),
+      ...(payload.reasonForVisit !== undefined
+        ? { reasonForVisit: payload.reasonForVisit.trim() }
+        : {}),
+    })
     .where(and(eq(visitRequests.id, id), eq(visitRequests.userId, userId)))
     .returning();
 

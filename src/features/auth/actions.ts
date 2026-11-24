@@ -11,6 +11,7 @@ export interface UpdateProfilePayload {
   name: string;
   phone?: string | null;
   dob?: string | null;
+  image?: string | null;
 }
 
 export async function updateProfileAction(
@@ -32,6 +33,7 @@ export async function updateProfileAction(
       name: trimmedName,
       phone: payload.phone?.trim() || null,
       dob: payload.dob?.trim() || null,
+      ...(payload.image !== undefined ? { image: payload.image } : {}),
       updatedAt: new Date(),
     })
     .where(eq(user.id, session.user.id));

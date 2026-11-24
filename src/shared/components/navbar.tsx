@@ -5,6 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import {
   NavigationMenu,
@@ -121,9 +126,16 @@ export default function NavBar({ variant = "public", user }: NavBarProps) {
                 href="/profile"
                 className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-primary transition-colors"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <User className="h-4 w-4" />
-                </div>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage
+                    src={user?.image ?? undefined}
+                    alt={user?.name || "Pasien"}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
                 <span className="max-w-30 truncate">
                   {user?.name || "Pasien"}
                 </span>

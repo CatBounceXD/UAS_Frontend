@@ -17,11 +17,10 @@ export const auth = betterAuth({
     additionalFields: {
       phone: {
         type: "string",
-        required: false,
-        defaultValue: null,
+        required: true,
         input: true,
       },
-      dob: { type: "string", required: false, defaultValue: null, input: true },
+      dob: { type: "string", required: true, input: true },
     },
   },
   plugins: [nextCookies()],
