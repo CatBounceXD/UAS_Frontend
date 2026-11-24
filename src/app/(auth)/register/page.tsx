@@ -13,49 +13,61 @@ import { Label } from "@/shared/components/ui/label";
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage(null);
 
-  const formData = new FormData(e.currentTarget);
-  const name            = formData.get("name") as string;
-  const email           = formData.get("email") as string;
-  const password        = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-  const phone           = formData.get("phone") as string;
-  const dob             = formData.get("dob") as string;
+    const formData = new FormData(e.currentTarget);
+    const name = (formData.get("name") as string).trim();
+    const email = (formData.get("email") as string).trim();
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    const phone = (formData.get("phone") as string).replace(/[\s-]/g, "");
+    const dob = formData.get("dob") as string;
 
-  if (password.length < 8) {
-    alert("Password harus minimal 8 karakter!");
-    return;
-  }
-  if (password !== confirmPassword) {
-    alert("Password dan Confirm Password tidak sama!");
-    return;
-  }
-  if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phone)) {
-    alert("Masukkan nomor HP yang valid (contoh: 081234567890 atau +6281234567890)!");
-    return;
-  }
+    if (password.length < 8) {
+      setErrorMessage("Password harus minimal 8 karakter!");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setErrorMessage("Password dan Confirm Password tidak sama!");
+      return;
+    }
+    if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phone)) {
+      setErrorMessage(
+        "Masukkan nomor HP yang valid (contoh: 081234567890 atau +6281234567890)!",
+      );
+      return;
+    }
 
-  const { error } = await authClient.signUp.email({
-    name,
-    email,
-    password,
-    phone,
-    dob,
-  });
+    setIsLoading(true);
+    try {
+      const { error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        phone,
+        dob,
+      });
 
-  if (error) {
-    alert(error.message || "Registrasi gagal");
-    return;
-  }
+      if (error) {
+        setErrorMessage(error.message || "Registrasi gagal");
+        return;
+      }
 
-  router.push("/login");
-  router.refresh();
-};
+      router.push("/login");
+      router.refresh();
+    } catch {
+      setErrorMessage("Terjadi kesalahan jaringan. Silakan coba lagi.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f7f9]">
@@ -85,6 +97,15 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 industry
               </p>
             </div>
+
+            {errorMessage && (
+              <div
+                role="alert"
+                className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-600"
+              >
+                {errorMessage}
+              </div>
+            )}
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-1.5">
@@ -128,10 +149,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     name="phone"
                     type="tel"
                     placeholder="081234567890"
-                    minLength={12}
-                    maxLength={13}
-                    pattern="[0-9]{12,13}"
-                    inputMode="numeric"
+                    inputMode="tel"
                     required
                     className="bg-[#f6f7f9] border-none text-sm h-10"
                   />
@@ -217,9 +235,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full h-11 mt-4 bg-[#2196F3] hover:bg-blue-600"
               >
-                Signup
+                {isLoading ? "Signing up..." : "Signup"}
               </Button>
             </form>
 

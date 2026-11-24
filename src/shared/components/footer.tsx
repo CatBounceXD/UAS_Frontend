@@ -58,7 +58,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="/appointments"
+                href="/visit-request"
                 className="hover:text-primary transition-colors"
               >
                 Janji Temu
@@ -66,7 +66,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="/education"
+                href="/resource"
                 className="hover:text-primary transition-colors"
               >
                 Edukasi Kesehatan
@@ -146,11 +146,11 @@ export default function Footer() {
             dilindungi.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/terms" className="hover:text-primary">
+            <Link href="/contact#terms" className="hover:text-primary">
               Syarat &amp; Ketentuan
             </Link>
             <span>|</span>
-            <Link href="/privacy" className="hover:text-primary">
+            <Link href="/contact#privacy" className="hover:text-primary">
               Kebijakan Privasi
             </Link>
           </div>

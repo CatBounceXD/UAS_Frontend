@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -21,13 +21,15 @@ export default function ForgotPasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     const formData = new FormData(e.currentTarget);
-
+    const email = (formData.get("email") as string).trim();
+    const name = (formData.get("name") as string).trim();
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
 
@@ -41,7 +43,27 @@ export default function ForgotPasswordPage() {
       return;
     }
 
-    setSuccess(true);
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Gagal mengubah password.");
+        return;
+      }
+
+      setSuccess(true);
+    } catch {
+      setError("Terjadi kesalahan jaringan. Silakan coba lagi.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,7 +101,8 @@ export default function ForgotPasswordPage() {
                 <CardTitle className="text-xl">Forgot Password?</CardTitle>
 
                 <CardDescription>
-                  Create a new password for your Orthopaedic Center account.
+                  Verify your account details to create a new password for your
+                  Orthopaedic Center account.
                 </CardDescription>
               </CardHeader>
 
@@ -103,6 +126,26 @@ export default function ForgotPasswordPage() {
                       />
 
                       <Mail
+                        size={18}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Full Name</Label>
+
+                    <div className="relative">
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Enter your registered full name"
+                        required
+                        className="pr-10"
+                      />
+
+                      <User
                         size={18}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                       />
@@ -177,9 +220,10 @@ export default function ForgotPasswordPage() {
 
                   <Button
                     type="submit"
+                    disabled={isLoading}
                     className="w-full h-11 bg-[#2196F3] hover:bg-blue-600"
                   >
-                    Reset Password
+                    {isLoading ? "Resetting..." : "Reset Password"}
                   </Button>
                 </form>
               </CardContent>
