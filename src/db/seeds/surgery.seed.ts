@@ -1,174 +1,150 @@
+import { asc } from "drizzle-orm";
 import { db } from "../index";
-import { surgeries } from "../schema";
+import { doctors, surgeries } from "../schema";
 
-export const SEED_SURGERIES = [
+const SURGEON_SPECIALTY_MAP: Record<string, string> = {
+  "Heart Surgeon": "Heart Surgeon",
+  Cardiologists: "Cardiac Surgeon",
+  Anesthesiologists: "Surgical Anesthesiologist",
+  Dermatologists: "Dermatologic Surgeon",
+  Ophthalmologists: "Ophthalmic Surgeon",
+  Neurologists: "Neurosurgeon",
+  Endocrinologists: "Endocrine Surgeon",
+};
+
+function toSurgeonSpecialty(specialty: string): string {
+  if (SURGEON_SPECIALTY_MAP[specialty]) {
+    return SURGEON_SPECIALTY_MAP[specialty];
+  }
+  if (specialty.toLowerCase().includes("surgeon")) {
+    return specialty;
+  }
+  return `${specialty.replace(/ists$/i, "ic")} Surgeon`;
+}
+
+const SURGERY_CASES = [
   {
-    doctorName: "Dr. Darlene Robertson",
-    doctorSpecialty: "Heart Surgeon",
-    doctorAvatarUrl:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
-    specialtySummary:
-      "Dr. Darlene Robertson specializes in the treatment of cardiovascular and thoracic conditions and performs several surgical procedures including:",
-    procedures: [
-      "Coronary Artery Bypass",
-      "Heart Valve Repair",
-      "Minimally Invasive Cardiac Surgery",
-      "Aortic Surgery",
-    ],
     status: "Active",
     recommendationComment:
-      "Patient shows stable preoperative cardiac markers. Recommended to proceed with scheduled minimally invasive evaluation and preoperative blood panel.",
+      "Patient shows stable preoperative markers. Recommended to proceed with scheduled minimally invasive surgical evaluation and preoperative lab panel.",
     suggestionNote:
-      "Preoperative echocardiogram and fasting lipid panel should be completed 48 hours prior to the scheduled surgical consultation.",
-    patientName: "John Smith",
-    patientEmail: "john.smith@domain.com",
-    patientDob: "12-02-2001",
-    addressLine1: "6033 Collins Inlet",
-    addressLine2: "Suite 204",
-    city: "West Gina",
-    state: "New York",
-    zipcode: "70945",
-    contactInfo: "278.268.6823 x36440",
-    referralSource: "Internet",
-    preferredContactMethod: "Home Phone",
-    ssn: "0 123 456 7890",
-    isPolicyHolderSameAsPatient: true,
-    policyHolderName: "John Smith",
-    healthInsurancePlan: "BlueCross Comprehensive Care",
-    healthInsuranceNumber: "0 123 456 789",
-    groupNumber: "0 123 456 789",
+      "Preoperative diagnostic imaging and fasting blood panel should be completed 48 hours prior to the scheduled surgical consultation.",
     preferredAppointmentTime: "Morning",
     urgency: "With in a Month",
     reasonForVisit:
-      "Follow-up surgical evaluation for persistent chest tightness during moderate exertion and review of recent stress test imaging.",
+      "Follow-up surgical evaluation for persistent symptoms during moderate exertion and review of recent diagnostic imaging.",
   },
   {
-    doctorName: "PETER C. NEFF",
-    doctorSpecialty: "Heart Surgeon",
-    doctorAvatarUrl:
-      "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&auto=format&fit=crop&q=80",
-    specialtySummary:
-      "Dr. Peter C. Neff specializes in vascular and cardiothoracic procedures and performs several surgical interventions including:",
-    procedures: [
-      "Endovascular Repair",
-      "Valve Replacement",
-      "Arrhythmia Surgery",
-      "Thoracic Consultation",
-    ],
     status: "Active",
     recommendationComment:
-      "Continue current low-dose anticoagulation regimen until five days prior to procedure; anesthesia clearance has been requested.",
+      "Continue current preoperative medication regimen until five days prior to procedure; anesthesia clearance has been requested.",
     suggestionNote:
-      "Bring all recent ECG printouts and current medication list for preoperative surgical clearance review.",
-    patientName: "John Smith",
-    patientEmail: "john.smith@domain.com",
-    patientDob: "12-02-2001",
-    addressLine1: "6033 Collins Inlet",
-    addressLine2: "Suite 204",
-    city: "West Gina",
-    state: "New York",
-    zipcode: "70945",
-    contactInfo: "278.268.6823 x36440",
-    referralSource: "Doctor Referral",
-    preferredContactMethod: "Home Phone",
-    ssn: "0 123 456 7890",
-    isPolicyHolderSameAsPatient: true,
-    policyHolderName: "John Smith",
-    healthInsurancePlan: "BlueCross Comprehensive Care",
-    healthInsuranceNumber: "0 123 456 789",
-    groupNumber: "0 123 456 789",
+      "Bring all recent diagnostic test printouts and current medication list for preoperative surgical clearance review.",
     preferredAppointmentTime: "Morning",
     urgency: "With in a Month",
     reasonForVisit:
-      "Consultation regarding surgical repair options and recovery timeline following outpatient cardiology referral.",
+      "Consultation regarding surgical repair options and recovery timeline following outpatient specialist referral.",
   },
   {
-    doctorName: "DR. HALLQUIST",
-    doctorSpecialty: "Heart Surgeon",
-    doctorAvatarUrl:
-      "https://images.unsplash.com/photo-1594824813571-2153349aed06?w=150&auto=format&fit=crop&q=80",
-    specialtySummary:
-      "Dr. Hallquist specializes in minimally invasive surgical procedures and diagnostic interventions including:",
-    procedures: [
-      "Robotic-Assisted Surgery",
-      "Arthroscopy",
-      "Sports Medicine",
-      "Joint Reconstruction",
-    ],
     status: "Active",
     recommendationComment:
-      "Imaging confirms localized structural strain; conservative physical therapy paired with outpatient surgical review is advised.",
+      "Imaging confirms localized condition; conservative preparation paired with outpatient surgical review is advised.",
     suggestionNote:
-      "Avoid high-impact physical activity and complete baseline mobility assessment before the upcoming surgical appointment.",
-    patientName: "John Smith",
-    patientEmail: "john.smith@domain.com",
-    patientDob: "12-02-2001",
-    addressLine1: "6033 Collins Inlet",
-    addressLine2: "Suite 204",
-    city: "West Gina",
-    state: "New York",
-    zipcode: "70945",
-    contactInfo: "278.268.6823 x36440",
-    referralSource: "Internet",
-    preferredContactMethod: "Home Phone",
-    ssn: "0 123 456 7890",
-    isPolicyHolderSameAsPatient: true,
-    policyHolderName: "John Smith",
-    healthInsurancePlan: "BlueCross Comprehensive Care",
-    healthInsuranceNumber: "0 123 456 789",
-    groupNumber: "0 123 456 789",
+      "Avoid strenuous physical activity and complete baseline clinical assessment before the upcoming surgical appointment.",
     preferredAppointmentTime: "Morning",
     urgency: "With in a Month",
     reasonForVisit:
-      "Pre-surgical consultation and review of MRI findings to determine minimally invasive treatment schedule.",
+      "Pre-surgical consultation and review of scan findings to determine minimally invasive treatment schedule.",
   },
   {
-    doctorName: "Richard Muldoone",
-    doctorSpecialty: "Orthopaedic Surgeon",
-    doctorAvatarUrl:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80",
-    specialtySummary:
-      "Dr. Muldoone specializes in the treatment of a variety of orthopaedic conditions and performs several orthopaedic procedures including:",
-    procedures: [
-      "Arthroscopy",
-      "Sports Medicine",
-      "Orthopaedic Trauma",
-      "Joint Reconstruction",
-      "Computer Navigation and Robotic Surgery",
-    ],
     status: "Active",
     recommendationComment:
-      "Candidate is cleared for outpatient arthroscopic procedure. Post-operative rehabilitation plan will begin within one week of surgery.",
+      "Candidate is cleared for outpatient surgical procedure. Post-operative rehabilitation plan will begin within one week of surgery.",
     suggestionNote:
       "Fast after midnight on the evening prior to surgery and arrange transportation home following outpatient discharge.",
-    patientName: "John Smith",
-    patientEmail: "john.smith@domain.com",
-    patientDob: "12-02-2001",
-    addressLine1: "6033 Collins Inlet",
-    addressLine2: "Suite 204",
-    city: "West Gina",
-    state: "New York",
-    zipcode: "70945",
-    contactInfo: "278.268.6823 x36440",
-    referralSource: "Internet",
-    preferredContactMethod: "Home Phone",
-    ssn: "0 123 456 7890",
-    isPolicyHolderSameAsPatient: true,
-    policyHolderName: "John Smith",
-    healthInsurancePlan: "BlueCross Comprehensive Care",
-    healthInsuranceNumber: "0 123 456 789",
-    groupNumber: "0 123 456 789",
     preferredAppointmentTime: "Morning",
     urgency: "Next Available",
     reasonForVisit:
-      "Comprehensive orthopaedic surgical evaluation and scheduling for robotic-assisted joint reconstruction.",
+      "Comprehensive surgical evaluation and scheduling for minimally invasive specialist procedure.",
+  },
+  {
+    status: "Completed",
+    recommendationComment:
+      "Post-operative recovery progressing well with clean incision healing. Continue prescribed recovery protocol.",
+    suggestionNote:
+      "Schedule routine post-operative check-up in two weeks and continue prescribed medications.",
+    preferredAppointmentTime: "Morning",
+    urgency: "Routine",
+    reasonForVisit:
+      "Post-surgical follow-up consultation and evaluation of recovery progress.",
+  },
+  {
+    status: "Active",
+    recommendationComment:
+      "Preoperative neurological and clinical screening completed. Cleared to proceed with scheduled surgical intervention.",
+    suggestionNote:
+      "Complete preoperative blood work 24 hours before admission and follow pre-surgery dietary guidelines.",
+    preferredAppointmentTime: "Afternoon",
+    urgency: "With in a Month",
+    reasonForVisit:
+      "Specialist surgical consultation and treatment planning based on recent clinical evaluation.",
   },
 ];
 
 export async function seedSurgeries() {
+  const existingDoctors = await db
+    .select()
+    .from(doctors)
+    .orderBy(asc(doctors.id))
+    .limit(SURGERY_CASES.length);
+
+  if (existingDoctors.length === 0) {
+    console.log(
+      "Belum ada data dokter di tabel doctors, lewati seeding surgeries.",
+    );
+    return;
+  }
+
   console.log("Membersihkan data surgeries lama...");
   await db.delete(surgeries);
 
-  console.log("Memasukkan data surgeries ke Neon...");
-  await db.insert(surgeries).values(SEED_SURGERIES);
+  const surgeryRows = existingDoctors.map((doc, index) => {
+    const template = SURGERY_CASES[index % SURGERY_CASES.length];
+    return {
+      doctorId: doc.id,
+      doctorName: doc.name,
+      doctorSpecialty: toSurgeonSpecialty(doc.specialty),
+      doctorAvatarUrl: doc.avatarUrl,
+      specialtySummary: doc.specialtySummary,
+      procedures: doc.procedures,
+      status: template.status,
+      recommendationComment: template.recommendationComment,
+      suggestionNote: template.suggestionNote,
+      patientName: "John Smith",
+      patientEmail: "john.smith@domain.com",
+      patientDob: "12-02-2001",
+      addressLine1: "6033 Collins Inlet",
+      addressLine2: "Suite 204",
+      city: "West Gina",
+      state: "New York",
+      zipcode: "70945",
+      contactInfo: "278.268.6823 x36440",
+      referralSource: index % 2 === 0 ? "Internet" : "Doctor Referral",
+      preferredContactMethod: "Home Phone",
+      ssn: "0 123 456 7890",
+      isPolicyHolderSameAsPatient: true,
+      policyHolderName: "John Smith",
+      healthInsurancePlan: "BlueCross Comprehensive Care",
+      healthInsuranceNumber: "0 123 456 789",
+      groupNumber: "0 123 456 789",
+      preferredAppointmentTime: template.preferredAppointmentTime,
+      urgency: template.urgency,
+      reasonForVisit: template.reasonForVisit,
+    };
+  });
+
+  console.log(
+    `Memasukkan ${surgeryRows.length} data surgeries yang terhubung ke doctors...`,
+  );
+  await db.insert(surgeries).values(surgeryRows);
 }
