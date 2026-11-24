@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
-import type { ProfileSidebarUser } from "@/features/auth/ProfileSidebar";
 import { updateProfileAction } from "@/features/auth/actions";
+import type { ProfileSidebarUser } from "@/features/auth/ProfileSidebar";
 import { authClient } from "@/lib/auth-client";
 import {
   Avatar,

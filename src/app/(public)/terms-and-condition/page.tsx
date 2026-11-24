@@ -1,6 +1,4 @@
-import React from "react";
-
-const privacyParagraphs = [
+const termsParagraphs = [
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vel nibh molestie, sollicitudin justo at, commodo magna. Donec diam turpis, luctus id mattis ut, viverra id tortor. Nunc gravida, tortor et congue elementum, ipsum mi eleifend lorem, in porttitor augue enim at purus. In lectus tortor, pulvinar non venenatis ultrices, faucibus et sem. Duis felis mauris, maximus at pulvinar eget, malesuada id sem. Donec elit sapien, ultrices nec posuere ut, ullamcorper sed tellus. Nunc elit massa, pellentesque ut urna a, vehicula mattis purus. Vestibulum posuere nisl eu nisl lacinia luctus. Mauris posuere pellentesque velit. Donec fermentum, sapien ut bibendum elementum, neque ante sollicitudin libero, sed consectetur sem urna consequat metus. Ut suscipit ligula sed nibh fermentum, non luctus nunc pulvinar. Morbi luctus turpis, sodales vehicula facilisis at, mollis auctor ex. Etiam tristique vel enim imperdiet sagittis.",
   "Pellentesque non augue sit amet quam dignissim aliquam sed et enim. Cras in lorem maximus urna vehicula dapibus. Maecenas ultrices et eros eget egestas. Etiam tempus venenatis nisl. Cras mattis dictum odio sed pellentesque. Curabitur tortor felis, ornare quis massa eu, viverra tempus nisi. Aenean suscipit felis vitae arcu condimentum egestas. Pellentesque id magna scelerisque, ultrices mi semper, volutpat metus.",
   "Cras eu urna tincidunt, laoreet dolor in, vehicula tortor. Praesent ultrices nisi vitae nunc placerat porta. Maecenas elementum, lacus in malesuada posuere, nisi mi facilisis diam, at imperdiet libero turpis eget dolor. Quisque ut dignissim ante, ac iaculis tortor. Vestibulum et scelerisque augue. Curabitur sagittis vel eros vitae aliquet. Cras nibh ligula, faucibus in viverra sit amet, varius vel risus. Nullam blandit vel nulla in finibus. Cras eu fermentum elit. Nulla feugiat fringilla tempor. Nulla dignissim imperdiet posuere. Sed congue diam quis nisi consequat suscipit. Vivamus quis tortor ut purus consequat tristique. In eu porttitor odio, ac imperdiet lorem. Nulla consequat mattis nibh, vel auctor odio efficitur ac.",
@@ -11,18 +9,18 @@ const privacyParagraphs = [
   "Pellentesque non augue sit amet quam dignissim aliquam sed et enim. Cras in lorem maximus urna vehicula dapibus. Maecenas ultrices et eros eget egestas. Etiam tempus venenatis nisl. Cras mattis dictum odio sed pellentesque. Curabitur tortor felis, ornare quis massa eu, viverra tempus nisi. Aenean suscipit felis vitae arcu condimentum egestas. Pellentesque id magna scelerisque, ultrices mi semper, volutpat metus.",
 ];
 
-export default function PrivacyPolicyPage() {
+export default function TermsAndConditionPage() {
   return (
     <div className="w-full bg-[#F8FAFC] py-8 sm:py-10">
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl border border-gray-100 shadow-2xs p-6 sm:p-10">
           <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-[#1E293B] mb-6">
-            Privacy <span className="text-[#2394F0]">Policy</span>
+            Terms <span className="text-[#2394F0]">&amp; Condition</span>
           </h1>
 
           <div className="space-y-5 text-xs sm:text-[13px] text-[#475569] leading-relaxed">
-            {privacyParagraphs.map((text, index) => (
-              <p key={`privacy-p-${index + 1}`}>{text}</p>
+            {termsParagraphs.map((text, index) => (
+              <p key={`terms-p-${index + 1}`}>{text}</p>
             ))}
           </div>
         </div>

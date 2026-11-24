@@ -83,10 +83,7 @@ export default async function Main() {
                     <p className="mt-2 mb-4 line-clamp-3 text-xs text-gray-500">
                       {doc.bio}
                     </p>
-                    <Link
-                      href={`/doctors/${doc.id}`}
-                      className="mt-auto block"
-                    >
+                    <Link href={`/doctors/${doc.id}`} className="mt-auto block">
                       <Button
                         size="sm"
                         className="w-full bg-blue-500 text-xs hover:bg-blue-600"

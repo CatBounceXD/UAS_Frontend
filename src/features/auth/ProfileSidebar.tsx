@@ -5,7 +5,11 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { updateProfileAction } from "@/features/auth/actions";
 import { authClient } from "@/lib/auth-client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -99,7 +103,9 @@ export function ProfileSidebar({
         return;
       }
 
-      const changingPassword = Boolean(currentPassword || newPassword || rePassword);
+      const changingPassword = Boolean(
+        currentPassword || newPassword || rePassword,
+      );
       if (changingPassword) {
         if (!currentPassword || !newPassword || !rePassword) {
           setNotice({
@@ -195,7 +201,9 @@ export function ProfileSidebar({
               <div className="space-y-4 border-t border-slate-100 pt-5 text-sm">
                 <div>
                   <p className="text-xs text-slate-400">Email</p>
-                  <p className="mt-0.5 font-medium text-sky-600">{user.email}</p>
+                  <p className="mt-0.5 font-medium text-sky-600">
+                    {user.email}
+                  </p>
                 </div>
 
                 <div>
