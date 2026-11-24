@@ -35,8 +35,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     alert("Password dan Confirm Password tidak sama!");
     return;
   }
-  if (!/^[0-9]{12,13}$/.test(phone)) {
-    alert("Nomor telepon harus terdiri dari 12-13 digit!");
+  if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phone)) {
+    alert("Masukkan nomor HP yang valid (contoh: 081234567890 atau +6281234567890)!");
     return;
   }
 

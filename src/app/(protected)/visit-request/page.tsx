@@ -22,7 +22,6 @@ export default async function VisitRequestPage() {
 
   return (
     <div className="space-y-8 text-slate-800">
-      {/* Header + Upcoming Appointment Banner */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-sm text-slate-500">Hi {userName},</p>
@@ -47,7 +46,7 @@ export default async function VisitRequestPage() {
         )}
       </div>
 
-      <VisitRequestListClient items={items} />
+      <VisitRequestListClient visitRequests={items} />
     </div>
   );
 }

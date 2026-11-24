@@ -1,7 +1,10 @@
 import { and, desc, eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { doctors, insurances, patients, visitRequests } from "@/db/schema";
-import type { VisitRequestPayload } from "@/lib/api";
+import type { VisitRequestPayload } from "./types";
+
+const referredDoctor = alias(doctors, "referred_doctor");
 
 export async function getVisitRequestsByUserId(userId: string) {
   const rows = await db
@@ -9,27 +12,57 @@ export async function getVisitRequestsByUserId(userId: string) {
       visitRequest: visitRequests,
       patient: patients,
       insurance: insurances,
+      doctor: doctors,
+      referredByDoctor: referredDoctor,
     })
     .from(visitRequests)
     .leftJoin(patients, eq(visitRequests.patientId, patients.id))
     .leftJoin(insurances, eq(visitRequests.insuranceId, insurances.id))
+    .leftJoin(doctors, eq(visitRequests.doctorId, doctors.id))
+    .leftJoin(
+      referredDoctor,
+      eq(visitRequests.referredByDoctorId, referredDoctor.id),
+    )
     .where(eq(visitRequests.userId, userId))
     .orderBy(desc(visitRequests.createdAt));
 
-  return rows.map(({ visitRequest, patient, insurance }) => ({
-    ...visitRequest,
-    patient,
-    insurance,
-  }));
+  return rows.map(
+    ({ visitRequest, patient, insurance, doctor, referredByDoctor }) => ({
+      ...visitRequest,
+      doctorName: doctor?.name ?? "Unknown Doctor",
+      doctorSpecialty: doctor?.specialty ?? "General",
+      doctorAvatarUrl: doctor?.avatarUrl ?? "",
+      referredByName: referredByDoctor?.name ?? null,
+      referredBySpecialty: referredByDoctor?.specialty ?? null,
+      referredByAvatarUrl: referredByDoctor?.avatarUrl ?? null,
+      patient,
+      insurance,
+      doctor,
+      referredByDoctor,
+    }),
+  );
 }
 
 export async function createVisitRequest(
   userId: string,
   body: VisitRequestPayload & { doctorId?: number },
 ) {
+  const allDoctors = await db.select().from(doctors);
+  const matchedDoctor =
+    allDoctors.find((d) => d.id === body.doctorId) ??
+    allDoctors.find(
+      (d) => d.name.toLowerCase() === body.doctorName?.toLowerCase(),
+    ) ??
+    allDoctors[0];
+
+  if (!matchedDoctor) {
+    throw new Error("Data dokter tidak ditemukan di database.");
+  }
+
   const [createdPatient] = await db
     .insert(patients)
     .values({
+      userId,
       name: body.name,
       email: body.email,
       dateOfBirth: body.dateOfBirth || "-",
@@ -62,26 +95,13 @@ export async function createVisitRequest(
     insuranceId = createdInsurance.id;
   }
 
-  const allDoctors = await db.select().from(doctors);
-  const matchedDoctor =
-    allDoctors.find((d) => d.id === body.doctorId) ??
-    allDoctors.find(
-      (d) => d.name.toLowerCase() === body.doctorName?.toLowerCase(),
-    );
-
   const [createdVisitRequest] = await db
     .insert(visitRequests)
     .values({
       userId,
       patientId: createdPatient.id,
       insuranceId,
-      doctorId: matchedDoctor?.id ?? 1,
-      doctorName: body.doctorName || matchedDoctor?.name || "Doctor",
-      doctorSpecialty:
-        body.doctorSpecialty || matchedDoctor?.specialty || "General",
-      doctorAvatarUrl:
-        matchedDoctor?.avatarUrl ??
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
+      doctorId: matchedDoctor.id,
       preferredAppointmentTime: body.preferredAppointmentTime || "Morning",
       urgency: body.urgency || "Routine",
       reasonForVisit: body.reasonForVisit,
@@ -101,11 +121,16 @@ export async function getVisitRequestDetailById(id: number, userId: string) {
       patient: patients,
       insurance: insurances,
       doctor: doctors,
+      referredByDoctor: referredDoctor,
     })
     .from(visitRequests)
     .leftJoin(patients, eq(visitRequests.patientId, patients.id))
     .leftJoin(insurances, eq(visitRequests.insuranceId, insurances.id))
     .leftJoin(doctors, eq(visitRequests.doctorId, doctors.id))
+    .leftJoin(
+      referredDoctor,
+      eq(visitRequests.referredByDoctorId, referredDoctor.id),
+    )
     .where(and(eq(visitRequests.id, id), eq(visitRequests.userId, userId)));
 
   if (!row) {
@@ -114,9 +139,16 @@ export async function getVisitRequestDetailById(id: number, userId: string) {
 
   return {
     ...row.visitRequest,
+    doctorName: row.doctor?.name ?? "Unknown Doctor",
+    doctorSpecialty: row.doctor?.specialty ?? "General",
+    doctorAvatarUrl: row.doctor?.avatarUrl ?? "",
+    referredByName: row.referredByDoctor?.name ?? null,
+    referredBySpecialty: row.referredByDoctor?.specialty ?? null,
+    referredByAvatarUrl: row.referredByDoctor?.avatarUrl ?? null,
     patient: row.patient,
     insurance: row.insurance,
     doctor: row.doctor,
+    referredByDoctor: row.referredByDoctor,
   };
 }
 

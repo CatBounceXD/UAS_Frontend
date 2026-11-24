@@ -1,26 +1,56 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
+import { submitCheckInReview } from "../actions";
 
 export default function CheckInStep4() {
   const router = useRouter();
 
+  const [checkInId, setCheckInId] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const savedResult = sessionStorage.getItem("checkInResult");
+    if (!savedResult) {
+      router.replace("/checkin/step-1");
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(savedResult) as { id?: number };
+      if (!parsed.id) {
+        router.replace("/checkin/step-1");
+        return;
+      }
+      setCheckInId(parsed.id);
+    } catch {
+      router.replace("/checkin/step-1");
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!checkInId || rating === 0 || !review.trim() || isSubmitting) return;
 
-    const reviewData = {
-      rating,
-      review,
-      submittedAt: new Date().toISOString(),
-    };
+    setIsSubmitting(true);
+    setError(null);
 
-    sessionStorage.setItem("checkInReview", JSON.stringify(reviewData));
+    const res = await submitCheckInReview(checkInId, rating, review);
 
+    if (!res.success) {
+      setError(res.message);
+      setIsSubmitting(false);
+      return;
+    }
+
+    sessionStorage.removeItem("checkInPatient");
+    sessionStorage.removeItem("checkInResult");
+    setIsSubmitting(false);
     setReviewSubmitted(true);
   };
 
@@ -85,16 +115,25 @@ export default function CheckInStep4() {
                   onChange={(e) => setReview(e.target.value)}
                   placeholder="Tell us about your experience..."
                   rows={5}
+                  disabled={isSubmitting}
                   className="w-full rounded-xl border border-gray-300 p-4 text-gray-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
+              {error && (
+                <p className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600">
+                  {error}
+                </p>
+              )}
+
               <button
                 type="submit"
-                disabled={rating === 0 || !review.trim()}
+                disabled={
+                  !checkInId || rating === 0 || !review.trim() || isSubmitting
+                }
                 className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
               >
-                Submit Review
+                {isSubmitting ? "Submitting Review..." : "Submit Review"}
               </button>
             </form>
           </>
@@ -113,10 +152,10 @@ export default function CheckInStep4() {
 
             <button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/dashboard")}
               className="rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700"
             >
-              Back to Home
+              Back to Dashboard
             </button>
           </div>
         )}

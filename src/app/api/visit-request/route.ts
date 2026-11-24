@@ -4,7 +4,7 @@ import {
   createVisitRequest,
   getVisitRequestsByUserId,
 } from "@/features/visit-request/queries";
-import type { VisitRequestPayload } from "@/lib/api";
+import type { VisitRequestPayload } from "@/features/visit-request/types";
 import { auth } from "@/lib/auth";
 
 export async function GET() {
@@ -42,9 +42,24 @@ export async function POST(req: Request) {
       doctorId?: number;
     };
 
-    if (!body.name || !body.email || !body.reasonForVisit) {
+    if (
+      !body.name?.trim() ||
+      !body.email?.trim() ||
+      !body.dateOfBirth?.trim() ||
+      !body.addressLine1?.trim() ||
+      !body.city?.trim() ||
+      !body.state?.trim() ||
+      !body.zipcode?.trim() ||
+      !body.contactInfo?.trim() ||
+      !body.healthInsurancePlan?.trim() ||
+      !body.healthInsuranceNumber?.trim() ||
+      !body.reasonForVisit?.trim()
+    ) {
       return NextResponse.json(
-        { message: "Nama, email, dan alasan kunjungan wajib diisi." },
+        {
+          message:
+            "Harap lengkapi seluruh data pasien, asuransi, dan alasan kunjungan.",
+        },
         { status: 400 },
       );
     }

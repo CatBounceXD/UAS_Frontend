@@ -1,14 +1,24 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   getSurgeryById,
   updateSurgeryStatus,
 } from "@/features/surgery/queries";
+import { auth } from "@/lib/auth";
 
 export async function GET(
   _request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
     const numericId = Number(id);
 
@@ -16,7 +26,7 @@ export async function GET(
       return NextResponse.json({ error: "ID tidak valid." }, { status: 400 });
     }
 
-    const record = await getSurgeryById(numericId);
+    const record = await getSurgeryById(numericId, session.user.id);
 
     if (!record) {
       return NextResponse.json(
@@ -40,6 +50,14 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
     const numericId = Number(id);
 
@@ -64,6 +82,7 @@ export async function PATCH(
 
     const updated = await updateSurgeryStatus(
       numericId,
+      session.user.id,
       body.status,
       body.cancelReason,
     );

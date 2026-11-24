@@ -3,14 +3,22 @@
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 
-export default function CheckInStep1() {
+interface CheckInStep1Props {
+  defaultUser?: {
+    fullName: string;
+    birthDate: string;
+    phone: string;
+  };
+}
+
+export default function CheckInStep1({ defaultUser }: CheckInStep1Props) {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    birthDate: "",
+    fullName: defaultUser?.fullName ?? "",
+    birthDate: defaultUser?.birthDate ?? "",
     gender: "",
-    phone: "",
+    phone: defaultUser?.phone ?? "",
     address: "",
     complaint: "",
   });
@@ -28,6 +36,7 @@ export default function CheckInStep1() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    sessionStorage.removeItem("checkInResult");
     sessionStorage.setItem("checkInPatient", JSON.stringify(formData));
 
     router.push("/checkin/step-2");

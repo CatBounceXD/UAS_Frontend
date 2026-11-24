@@ -1,15 +1,23 @@
 import { ArrowLeft } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import SurgeryDetailActions from "@/features/surgery/components/SurgeryDetailActions";
 import SurgeryDetailInfo from "@/features/surgery/components/SurgeryDetailInfo";
 import { getSurgeryById } from "@/features/surgery/queries";
+import { auth } from "@/lib/auth";
 
 export default async function SurgeryDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const { id } = await params;
   const numericId = Number(id);
 
@@ -17,7 +25,7 @@ export default async function SurgeryDetailPage({
     notFound();
   }
 
-  const detail = await getSurgeryById(numericId);
+  const detail = await getSurgeryById(numericId, session.user.id);
 
   if (!detail) {
     notFound();

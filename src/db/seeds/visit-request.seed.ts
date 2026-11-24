@@ -1,8 +1,15 @@
-import { asc } from "drizzle-orm";
 import { db } from "../index";
-import { doctors, insurances, patients, user, visitRequests } from "../schema";
+import {
+  type doctors,
+  insurances,
+  patients,
+  user,
+  visitRequests,
+} from "../schema";
 
-export async function seedVisitRequests() {
+type DoctorRow = typeof doctors.$inferSelect;
+
+export async function seedVisitRequests(doctorList: DoctorRow[]) {
   const existingUsers = await db.select().from(user).limit(1);
 
   if (existingUsers.length === 0) {
@@ -12,18 +19,14 @@ export async function seedVisitRequests() {
     return;
   }
 
-  const allDoctors = await db.select().from(doctors).orderBy(asc(doctors.id));
-
-  if (allDoctors.length === 0) {
-    console.log(
-      "Belum ada dokter di tabel doctors, lewati seeding visit_requests.",
-    );
+  if (doctorList.length === 0) {
+    console.log("Belum ada dokter, lewati seeding visit_requests.");
     return;
   }
 
   const findDoctor = (name: string, fallbackIndex: number) =>
-    allDoctors.find((d) => d.name.toLowerCase() === name.toLowerCase()) ??
-    allDoctors[fallbackIndex % allDoctors.length];
+    doctorList.find((d) => d.name.toLowerCase() === name.toLowerCase()) ??
+    doctorList[fallbackIndex % doctorList.length];
 
   const doc1 = findDoctor("Dr. Darlene Robertson", 0);
   const doc2 = findDoctor("PETER C. NEFF", 6);
@@ -32,22 +35,20 @@ export async function seedVisitRequests() {
 
   const targetUser = existingUsers[0];
 
-  console.log("Membersihkan data visit_requests lama...");
-  await db.delete(visitRequests);
-
   const [samplePatient] = await db
     .insert(patients)
     .values({
+      userId: targetUser.id,
       name: targetUser.name || "John Smith",
       email: targetUser.email || "john.smith@domain.com",
-      dateOfBirth: "12-02-2001",
+      dateOfBirth: targetUser.dob || "12-02-2001",
       addressLine1: "6033 Collins Inlet",
-      addressLine2: "6033 Collins Inlet",
+      addressLine2: "Apt 4B",
       city: "West Gina",
       state: "New York",
       zipcode: "70945",
       preferredContactMethod: "Home Phone",
-      contactInfo: "278.268.6823 x36440",
+      contactInfo: targetUser.phone || "278.268.6823 x36440",
       referralSource: "Internet",
       ssn: "0 123 456 7890",
     })
@@ -75,9 +76,6 @@ export async function seedVisitRequests() {
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
       doctorId: doc1.id,
-      doctorName: doc1.name,
-      doctorSpecialty: doc1.specialty,
-      doctorAvatarUrl: doc1.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
@@ -91,17 +89,12 @@ export async function seedVisitRequests() {
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
       doctorId: doc2.id,
-      doctorName: doc2.name,
-      doctorSpecialty: doc2.specialty,
-      doctorAvatarUrl: doc2.avatarUrl,
+      referredByDoctorId: doc1.id,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
         "Specialist referral consultation for comprehensive diagnostic imaging and treatment planning.",
       recommendationComment: defaultComment,
-      referredByName: doc1.name,
-      referredBySpecialty: doc1.specialty,
-      referredByAvatarUrl: doc1.avatarUrl,
       status: "Referred",
       hasFamilyBadge: true,
     },
@@ -110,9 +103,6 @@ export async function seedVisitRequests() {
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
       doctorId: doc3.id,
-      doctorName: doc3.name,
-      doctorSpecialty: doc3.specialty,
-      doctorAvatarUrl: doc3.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
@@ -129,9 +119,6 @@ export async function seedVisitRequests() {
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
       doctorId: doc4.id,
-      doctorName: doc4.name,
-      doctorSpecialty: doc4.specialty,
-      doctorAvatarUrl: doc4.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
