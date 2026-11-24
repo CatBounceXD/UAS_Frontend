@@ -1,5 +1,7 @@
 import { db } from "../index";
 import { doctors } from "../schema";
+import { seedSurgeries } from "./surgery.seed";
+import { seedVisitRequests } from "./visit-request.seed";
 
 const DEFAULT_EDUCATION = {
   undergraduate: "University of Notre Dame, South Bend, IN.",
@@ -379,7 +381,10 @@ async function seed() {
     console.log("Memasukkan data dokter ke Neon...");
     await db.insert(doctors).values(SEED_DOCTORS);
 
-    console.log("Seeding doctors berhasil!");
+    await seedSurgeries();
+    await seedVisitRequests();
+
+    console.log("Seeding seluruh database berhasil!");
     process.exit(0);
   } catch (error) {
     console.error("Terjadi kesalahan saat seeding:", error);

@@ -1,7 +1,8 @@
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { surgeries } from "@/db/surgery.schema";
+import {
+  getSurgeryById,
+  updateSurgeryStatus,
+} from "@/features/surgery/queries";
 
 export async function GET(
   _request: Request,
@@ -15,10 +16,7 @@ export async function GET(
       return NextResponse.json({ error: "ID tidak valid." }, { status: 400 });
     }
 
-    const [record] = await db
-      .select()
-      .from(surgeries)
-      .where(eq(surgeries.id, numericId));
+    const record = await getSurgeryById(numericId);
 
     if (!record) {
       return NextResponse.json(
@@ -54,22 +52,21 @@ export async function PATCH(
       cancelReason?: string;
     };
 
-    if (!body.status || !["Active", "Completed", "Canceled"].includes(body.status)) {
+    if (
+      !body.status ||
+      !["Active", "Completed", "Canceled"].includes(body.status)
+    ) {
       return NextResponse.json(
         { error: "Status tidak valid." },
         { status: 400 },
       );
     }
 
-    const [updated] = await db
-      .update(surgeries)
-      .set({
-        status: body.status,
-        cancelReason:
-          body.status === "Canceled" ? (body.cancelReason ?? null) : null,
-      })
-      .where(eq(surgeries.id, numericId))
-      .returning();
+    const updated = await updateSurgeryStatus(
+      numericId,
+      body.status,
+      body.cancelReason,
+    );
 
     if (!updated) {
       return NextResponse.json(

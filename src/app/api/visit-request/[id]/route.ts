@@ -1,8 +1,9 @@
-import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { doctors, insurances, patients, visitRequests } from "@/db/schema";
+import {
+  getVisitRequestDetailById,
+  updateVisitRequestById,
+} from "@/features/visit-request/queries";
 import { auth } from "@/lib/auth";
 
 export async function GET(
@@ -25,39 +26,16 @@ export async function GET(
       return NextResponse.json({ error: "ID tidak valid." }, { status: 400 });
     }
 
-    const [row] = await db
-      .select({
-        visitRequest: visitRequests,
-        patient: patients,
-        insurance: insurances,
-        doctor: doctors,
-      })
-      .from(visitRequests)
-      .leftJoin(patients, eq(visitRequests.patientId, patients.id))
-      .leftJoin(insurances, eq(visitRequests.insuranceId, insurances.id))
-      .leftJoin(doctors, eq(visitRequests.doctorId, doctors.id))
-      .where(
-        and(
-          eq(visitRequests.id, numericId),
-          eq(visitRequests.userId, session.user.id),
-        ),
-      );
+    const data = await getVisitRequestDetailById(numericId, session.user.id);
 
-    if (!row) {
+    if (!data) {
       return NextResponse.json(
         { error: "Data kunjungan tidak ditemukan." },
         { status: 404 },
       );
     }
 
-    return NextResponse.json({
-      data: {
-        ...row.visitRequest,
-        patient: row.patient,
-        insurance: row.insurance,
-        doctor: row.doctor,
-      },
-    });
+    return NextResponse.json({ data });
   } catch (error) {
     console.error("GET /api/visit-request/[id] error:", error);
     return NextResponse.json(
@@ -94,41 +72,21 @@ export async function PATCH(
       reviewComment?: string;
     };
 
-    const updatePayload: Partial<typeof visitRequests.$inferInsert> = {
-      updatedAt: new Date(),
-    };
-
-    if (body.status) {
-      if (!["Active", "Referred", "Completed", "Canceled"].includes(body.status)) {
-        return NextResponse.json(
-          { error: "Status tidak valid." },
-          { status: 400 },
-        );
-      }
-      updatePayload.status = body.status;
-      if (body.status === "Canceled") {
-        updatePayload.cancelReason = body.cancelReason ?? null;
-      }
+    if (
+      body.status &&
+      !["Active", "Referred", "Completed", "Canceled"].includes(body.status)
+    ) {
+      return NextResponse.json(
+        { error: "Status tidak valid." },
+        { status: 400 },
+      );
     }
 
-    if (typeof body.rating === "number") {
-      updatePayload.rating = body.rating;
-    }
-
-    if (typeof body.reviewComment === "string") {
-      updatePayload.reviewComment = body.reviewComment;
-    }
-
-    const [updated] = await db
-      .update(visitRequests)
-      .set(updatePayload)
-      .where(
-        and(
-          eq(visitRequests.id, numericId),
-          eq(visitRequests.userId, session.user.id),
-        ),
-      )
-      .returning();
+    const updated = await updateVisitRequestById(
+      numericId,
+      session.user.id,
+      body,
+    );
 
     if (!updated) {
       return NextResponse.json(
