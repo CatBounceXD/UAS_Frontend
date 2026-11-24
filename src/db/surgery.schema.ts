@@ -1,14 +1,19 @@
 import {
   boolean,
+  integer,
   jsonb,
   pgTable,
   serial,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { doctors } from "./doctors.schema";
 
 export const surgeries = pgTable("surgeries", {
   id: serial("id").primaryKey(),
+  doctorId: integer("doctor_id").references(() => doctors.id, {
+    onDelete: "cascade",
+  }),
   doctorName: text("doctor_name").notNull(),
   doctorSpecialty: text("doctor_specialty").notNull(),
   doctorAvatarUrl: text("doctor_avatar_url").notNull(),

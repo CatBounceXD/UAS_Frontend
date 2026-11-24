@@ -1,5 +1,6 @@
+import { asc } from "drizzle-orm";
 import { db } from "../index";
-import { insurances, patients, user, visitRequests } from "../schema";
+import { doctors, insurances, patients, user, visitRequests } from "../schema";
 
 export async function seedVisitRequests() {
   const existingUsers = await db.select().from(user).limit(1);
@@ -10,6 +11,24 @@ export async function seedVisitRequests() {
     );
     return;
   }
+
+  const allDoctors = await db.select().from(doctors).orderBy(asc(doctors.id));
+
+  if (allDoctors.length === 0) {
+    console.log(
+      "Belum ada dokter di tabel doctors, lewati seeding visit_requests.",
+    );
+    return;
+  }
+
+  const findDoctor = (name: string, fallbackIndex: number) =>
+    allDoctors.find((d) => d.name.toLowerCase() === name.toLowerCase()) ??
+    allDoctors[fallbackIndex % allDoctors.length];
+
+  const doc1 = findDoctor("Dr. Darlene Robertson", 0);
+  const doc2 = findDoctor("PETER C. NEFF", 6);
+  const doc3 = findDoctor("DR. HALLQUIST", 4);
+  const doc4 = findDoctor("MATTHEW D. HNATOW", 7);
 
   const targetUser = existingUsers[0];
 
@@ -55,11 +74,10 @@ export async function seedVisitRequests() {
       userId: targetUser.id,
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
-      doctorId: 1,
-      doctorName: "Dr. Darlene Robertson",
-      doctorSpecialty: "Heart Surgeon",
-      doctorAvatarUrl:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
+      doctorId: doc1.id,
+      doctorName: doc1.name,
+      doctorSpecialty: doc1.specialty,
+      doctorAvatarUrl: doc1.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
@@ -72,20 +90,18 @@ export async function seedVisitRequests() {
       userId: targetUser.id,
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
-      doctorId: 7,
-      doctorName: "PETER C. NEFF",
-      doctorSpecialty: "Heart Surgeon",
-      doctorAvatarUrl:
-        "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&auto=format&fit=crop&q=80",
+      doctorId: doc2.id,
+      doctorName: doc2.name,
+      doctorSpecialty: doc2.specialty,
+      doctorAvatarUrl: doc2.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
         "Specialist referral consultation for comprehensive diagnostic imaging and treatment planning.",
       recommendationComment: defaultComment,
-      referredByName: "Dr. Darlene Robertson",
-      referredBySpecialty: "Heart Surgeon",
-      referredByAvatarUrl:
-        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&auto=format&fit=crop&q=80",
+      referredByName: doc1.name,
+      referredBySpecialty: doc1.specialty,
+      referredByAvatarUrl: doc1.avatarUrl,
       status: "Referred",
       hasFamilyBadge: true,
     },
@@ -93,11 +109,10 @@ export async function seedVisitRequests() {
       userId: targetUser.id,
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
-      doctorId: 5,
-      doctorName: "DR. HALLQUIST",
-      doctorSpecialty: "Heart Surgeon",
-      doctorAvatarUrl:
-        "https://images.unsplash.com/photo-1594824813571-2153349aed06?w=150&auto=format&fit=crop&q=80",
+      doctorId: doc3.id,
+      doctorName: doc3.name,
+      doctorSpecialty: doc3.specialty,
+      doctorAvatarUrl: doc3.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
@@ -113,11 +128,10 @@ export async function seedVisitRequests() {
       userId: targetUser.id,
       patientId: samplePatient.id,
       insuranceId: sampleInsurance.id,
-      doctorId: 8,
-      doctorName: "MATTHEW D. HNATOW",
-      doctorSpecialty: "Heart Surgeon",
-      doctorAvatarUrl:
-        "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80",
+      doctorId: doc4.id,
+      doctorName: doc4.name,
+      doctorSpecialty: doc4.specialty,
+      doctorAvatarUrl: doc4.avatarUrl,
       preferredAppointmentTime: "Morning",
       urgency: "With in a Month",
       reasonForVisit:
