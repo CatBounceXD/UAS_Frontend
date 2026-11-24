@@ -46,10 +46,7 @@ export async function createVisitRequest(
     .returning();
 
   let insuranceId: number | null = null;
-  if (
-    body.healthInsurancePlan?.trim() ||
-    body.healthInsuranceNumber?.trim()
-  ) {
+  if (body.healthInsurancePlan?.trim() || body.healthInsuranceNumber?.trim()) {
     const [createdInsurance] = await db
       .insert(insurances)
       .values({
@@ -160,3 +157,11 @@ export async function updateVisitRequestById(
 
   return updated ?? null;
 }
+
+export type VisitRequestWithRelations = Awaited<
+  ReturnType<typeof getVisitRequestsByUserId>
+>[number];
+
+export type VisitRequestDetailRecord = NonNullable<
+  Awaited<ReturnType<typeof getVisitRequestDetailById>>
+>;
