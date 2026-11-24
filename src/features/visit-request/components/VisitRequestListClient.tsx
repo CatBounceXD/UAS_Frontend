@@ -24,7 +24,7 @@ import { Button } from "@/shared/components/ui/button";
 type TabType = "Active" | "Completed" | "Canceled";
 
 export default function VisitRequestListClient({
-  visitRequests,
+  visitRequests = [],
 }: {
   visitRequests: VisitRequestWithRelations[];
 }) {
