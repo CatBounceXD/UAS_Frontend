@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 export interface Doctor {

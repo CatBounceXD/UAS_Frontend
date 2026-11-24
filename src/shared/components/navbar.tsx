@@ -34,6 +34,7 @@ const protectedNavItems = [
   { label: "Beranda", href: "/" },
   { label: "Dashboard", href: "/dashboard" },
   { label: "Kunjungan", href: "/visit-request" },
+  { label: "Operasi", href: "/surgery" },
   { label: "Sumber Daya", href: "/resource" },
   { label: "Kontak", href: "/contact" },
 ];
@@ -76,7 +77,11 @@ export default function NavBar({ variant = "public", user }: NavBarProps) {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-1">
             {navItems.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
               return (
                 <NavigationMenuItem key={item.href}>
                   <NavigationMenuLink
@@ -154,7 +159,11 @@ export default function NavBar({ variant = "public", user }: NavBarProps) {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-border py-4 space-y-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

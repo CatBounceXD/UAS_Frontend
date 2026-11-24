@@ -1,4 +1,3 @@
-// src/db/visit-request.schema.ts
 import {
   boolean,
   integer,
@@ -31,6 +30,12 @@ export const visitRequests = pgTable("visit_requests", {
   reasonForVisit: text("reason_for_visit").notNull(),
   status: text("status").notNull().default("Active"),
   rating: integer("rating"),
+  reviewComment: text("review_comment"),
+  recommendationComment: text("recommendation_comment"),
+  referredByName: text("referred_by_name"),
+  referredBySpecialty: text("referred_by_specialty"),
+  referredByAvatarUrl: text("referred_by_avatar_url"),
+  cancelReason: text("cancel_reason"),
   hasFamilyBadge: boolean("has_family_badge").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
