@@ -32,8 +32,7 @@ function mapSurgeryRecord(
     referralSource: patient?.referralSource ?? null,
     preferredContactMethod: patient?.preferredContactMethod ?? "-",
     ssn: patient?.ssn ?? null,
-    isPolicyHolderSameAsPatient:
-      insurance?.isPolicyHolderSameAsPatient ?? true,
+    isPolicyHolderSameAsPatient: insurance?.isPolicyHolderSameAsPatient ?? true,
     policyHolderName: insurance?.policyHolderName ?? patient?.name ?? "-",
     healthInsurancePlan: insurance?.healthInsurancePlan ?? "-",
     healthInsuranceNumber: insurance?.healthInsuranceNumber ?? "-",

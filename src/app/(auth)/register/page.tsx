@@ -16,46 +16,48 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const formData = new FormData(e.currentTarget);
-  const name            = formData.get("name") as string;
-  const email           = formData.get("email") as string;
-  const password        = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-  const phone           = formData.get("phone") as string;
-  const dob             = formData.get("dob") as string;
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    const phone = formData.get("phone") as string;
+    const dob = formData.get("dob") as string;
 
-  if (password.length < 8) {
-    alert("Password harus minimal 8 karakter!");
-    return;
-  }
-  if (password !== confirmPassword) {
-    alert("Password dan Confirm Password tidak sama!");
-    return;
-  }
-  if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phone)) {
-    alert("Masukkan nomor HP yang valid (contoh: 081234567890 atau +6281234567890)!");
-    return;
-  }
+    if (password.length < 8) {
+      alert("Password harus minimal 8 karakter!");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Password dan Confirm Password tidak sama!");
+      return;
+    }
+    if (!/^(\+62|62|0)8[1-9][0-9]{7,11}$/.test(phone)) {
+      alert(
+        "Masukkan nomor HP yang valid (contoh: 081234567890 atau +6281234567890)!",
+      );
+      return;
+    }
 
-  const { error } = await authClient.signUp.email({
-    name,
-    email,
-    password,
-    phone,
-    dob,
-  });
+    const { error } = await authClient.signUp.email({
+      name,
+      email,
+      password,
+      phone,
+      dob,
+    });
 
-  if (error) {
-    alert(error.message || "Registrasi gagal");
-    return;
-  }
+    if (error) {
+      alert(error.message || "Registrasi gagal");
+      return;
+    }
 
-  router.push("/login");
-  router.refresh();
-};
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f7f9]">
