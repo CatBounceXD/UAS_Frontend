@@ -4,17 +4,11 @@ import {
   getVisitRequestDetailById,
   updateVisitRequestById,
 } from "@/features/visit-request/queries";
+import {
+  VISIT_REQUEST_STATUSES,
+  type VisitRequestStatus,
+} from "@/features/visit-request/types";
 import { auth } from "@/lib/auth";
-
-const ALLOWED_STATUSES = [
-  "Pending",
-  "Confirmed",
-  "Completed",
-  "Cancelled",
-  "Referred",
-] as const;
-
-type AllowedStatus = (typeof ALLOWED_STATUSES)[number];
 
 function parseNumericId(rawId: string): number | null {
   const parsed = Number(rawId);
@@ -103,10 +97,21 @@ export async function PATCH(
   if (
     body.status !== undefined &&
     (typeof body.status !== "string" ||
-      !ALLOWED_STATUSES.includes(body.status as AllowedStatus))
+      !VISIT_REQUEST_STATUSES.includes(body.status as VisitRequestStatus))
   ) {
     return NextResponse.json(
       { error: "Status kunjungan tidak valid." },
+      { status: 400 },
+    );
+  }
+
+  if (
+    body.cancelReason !== undefined &&
+    body.cancelReason !== null &&
+    typeof body.cancelReason !== "string"
+  ) {
+    return NextResponse.json(
+      { error: "Alasan pembatalan harus berupa teks." },
       { status: 400 },
     );
   }
@@ -126,7 +131,8 @@ export async function PATCH(
       visitRequestId,
       session.user.id,
       {
-        status: body.status as AllowedStatus | undefined,
+        status: body.status as VisitRequestStatus | undefined,
+        cancelReason: body.cancelReason as string | null | undefined,
         rating: body.rating as number | undefined,
         reviewComment: body.reviewComment as string | undefined,
         preferredAppointmentTime:

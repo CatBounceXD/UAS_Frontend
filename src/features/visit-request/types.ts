@@ -1,3 +1,12 @@
+export const VISIT_REQUEST_STATUSES = [
+  "Active",
+  "Referred",
+  "Completed",
+  "Canceled",
+] as const;
+
+export type VisitRequestStatus = (typeof VISIT_REQUEST_STATUSES)[number];
+
 export type VisitRequestPayload = {
   name: string;
   email: string;

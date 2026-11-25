@@ -2,13 +2,9 @@ import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { doctors, insurances, patients, visitRequests } from "@/db/schema";
-import type { VisitRequestPayload } from "./types";
+import type { VisitRequestPayload, VisitRequestStatus } from "./types";
 
 const referredDoctor = alias(doctors, "referred_doctor");
-
-type VisitRequestStatus = NonNullable<
-  (typeof visitRequests.$inferInsert)["status"]
->;
 
 export async function getVisitRequestsByUserId(userId: string) {
   const rows = await db
@@ -171,7 +167,7 @@ export async function createVisitRequest(
         preferredAppointmentTime: payload.preferredAppointmentTime.trim(),
         urgency: payload.urgency.trim(),
         reasonForVisit: payload.reasonForVisit.trim(),
-        status: "Pending",
+        status: "Active",
       })
       .returning();
 
@@ -222,6 +218,7 @@ export async function updateVisitRequestById(
   userId: string,
   payload: {
     status?: VisitRequestStatus;
+    cancelReason?: string | null;
     rating?: number;
     reviewComment?: string;
     preferredAppointmentTime?: string;
@@ -244,12 +241,22 @@ export async function updateVisitRequestById(
     .update(visitRequests)
     .set({
       ...(payload.status !== undefined ? { status: payload.status } : {}),
+      ...(payload.cancelReason !== undefined
+        ? {
+            cancelReason:
+              payload.cancelReason === null
+                ? null
+                : payload.cancelReason.trim(),
+          }
+        : {}),
       ...(payload.rating !== undefined ? { rating: payload.rating } : {}),
       ...(payload.reviewComment !== undefined
         ? { reviewComment: payload.reviewComment.trim() }
         : {}),
       ...(payload.preferredAppointmentTime !== undefined
-        ? { preferredAppointmentTime: payload.preferredAppointmentTime.trim() }
+        ? {
+            preferredAppointmentTime: payload.preferredAppointmentTime.trim(),
+          }
         : {}),
       ...(payload.urgency !== undefined
         ? { urgency: payload.urgency.trim() }

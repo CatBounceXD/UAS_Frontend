@@ -1,5 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { del, put } from "@vercel/blob";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -10,7 +9,7 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/webp": "webp",
 };
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 export async function POST(req: Request) {
   try {
@@ -44,17 +43,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    if (session.user.image?.includes("blob.vercel-storage.com")) {
+      await del(session.user.image).catch(() => {});
+    }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "avatars");
-    await mkdir(uploadDir, { recursive: true });
-
-    const filename = `${session.user.id}-${Date.now()}.${ext}`;
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const filename = `avatars/${session.user.id}-${Date.now()}.${ext}`;
+    const blob = await put(filename, file, {
+      access: "public",
+    });
 
     return NextResponse.json({
-      url: `/uploads/avatars/${filename}`,
+      url: blob.url,
     });
   } catch (error) {
     console.error("POST /api/profile/avatar error:", error);

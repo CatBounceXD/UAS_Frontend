@@ -9,6 +9,11 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  trustedOrigins: [
+    "http://localhost:3000",
+    ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+  ],
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
